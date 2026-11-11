@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecclesia &amp; Shepherd Studio — Biblical Leadership, Polity &amp; Pastoral Care Lab | Bible Doctrine Academy</title>
+    <meta name="description" content="Interactive seminary studio for Bible Doctrine Academy Certificate 3 (BML 101–105): Servant-Shepherd &amp; Church Polity Lab, Corinthian Pastoral Jurisprudence Simulator, Biblical Soul Care &amp; Coaching Workbench, and 15-Question Mastery Exam.">
+    <script>
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var urlTheme = params.get('theme');
+            var isEmbed = params.get('embed') === '1';
+            try {
+                if (!isEmbed && window.self !== window.top) isEmbed = true;
+            } catch (e) {
+                isEmbed = true;
+            }
+            if (isEmbed) {
+                document.documentElement.setAttribute('data-bda-embed', '1');
+            }
+            var saved = null;
+            try {
+                if (urlTheme === 'light' || urlTheme === 'dark') {
+                    localStorage.setItem('bda_theme', urlTheme);
+                    saved = urlTheme;
+                } else {
+                    saved = localStorage.getItem('bda_theme');
+                }
+            } catch (e) {
+                saved = urlTheme;
+            }
+            document.documentElement.dataset.theme = (saved === 'light' || saved === 'dark') ? saved : 'light';
+
+            window.bdaReportProgress = function(appSlug, mastered, total, quizBestPct) {
+                var m = Number(mastered) || 0;
+                var tot = Number(total) || 0;
+                var q = Number(quizBestPct) || 0;
+                var payload = {
+                    app: appSlug,
+                    mastered: m,
+                    total: tot,
+                    quizBestPct: q,
+                    updatedAt: new Date().toISOString()
+                };
+                try {
+                    localStorage.setItem('bda_passport_' + appSlug, JSON.stringify(payload));
+                } catch (e) {}
+                try {
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'BDA_APP_PROGRESS',
+                            app: appSlug,
+                            mastered: m,
+                            total: tot,
+                            quizBestPct: q,
+                            completed: (tot > 0 && m >= Math.min(tot, 5)) || (q >= 70)
+                        }, '*');
+                    }
+                } catch (e) {}
+            };
+        })();
+
+        window.bdaSyncNavLinks = function() {
+            var lang = document.documentElement.lang || 'en';
+            var theme = document.documentElement.dataset.theme || 'light';
+            document.querySelectorAll('#bda-global-nav a[href], footer a[href]').forEach(function(a) {
+                try {
+                    var u = new URL(a.href, window.location.href);
+                    if (u.hostname.indexOf('bibledoc.academy') !== -1) {
+                        u.searchParams.set('lang', lang);
+                        u.searchParams.set('theme', theme);
+                        a.href = u.toString();
+                    }
+                } catch (e) {}
+            });
+        };
+
+        function toggleBdaTheme() {
+            var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+            document.documentElement.dataset.theme = next;
+            try { localStorage.setItem('bda_theme', next); } catch (e) {}
+            if (typeof window.bdaSyncNavLinks === 'function') window.bdaSyncNavLinks();
+            if (typeof window.onBdaThemeChange === 'function') window.onBdaThemeChange(next);
+        }
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter, Tinos, Noto Sans Hebrew, Noto Sans Arabic, Vazirmatn -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+Hebrew:wght@400;600;700&family=Tinos:ital,wght@0,400;0,700;1,400&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style id="bda-studio-theme">
+        :root, :root[data-theme="light"] {
+            --bda-bg: #f7f4eb;
+            --bda-surface: #fffdf8;
+            --bda-surface-muted: #ede8dc;
+            --bda-border: #d6cfc2;
+            --bda-text: #1c1917;
+            --bda-text-muted: #57534e;
+            --bda-accent: #b45309;
+            --bda-accent-soft: #fef3c7;
+            --bda-accent-text: #fffdf8;
+            --zone-gospel: #15803d;
+            --zone-gospel-soft: rgba(21, 128, 61, 0.12);
+            --zone-warn: #b91c1c;
+            --zone-warn-soft: rgba(185, 28, 28, 0.11);
+            --zone-info: #0369a1;
+            --zone-info-soft: rgba(3, 105, 161, 0.11);
+        }
+        :root[data-theme="dark"] {
+            --bda-bg: #0d0d0d;
+            --bda-surface: #161615;
+            --bda-surface-muted: #201f1d;
+            --bda-border: #2c2b28;
+            --bda-text: #ecebe6;
+            --bda-text-muted: #9a9890;
+            --bda-accent: #f59e0b;
+            --bda-accent-soft: #3a2604;
+            --bda-accent-text: #0d0d0d;
+            --zone-gospel: #4ade80;
+            --zone-gospel-soft: rgba(74, 222, 128, 0.14);
+            --zone-warn: #f87171;
+            --zone-warn-soft: rgba(248, 113, 113, 0.14);
+            --zone-info: #38bdf8;
+            --zone-info-soft: rgba(56, 189, 248, 0.14);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Noto Sans Hebrew', 'Noto Sans Arabic', 'Vazirmatn', sans-serif;
+            background-color: var(--bda-bg) !important;
+            color: var(--bda-text) !important;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        html[dir="rtl"] body {
+            font-family: 'Vazirmatn', 'Noto Sans Arabic', 'Noto Sans Hebrew', 'Inter', sans-serif;
+        }
+        h1, h2, .font-serif-title {
+            font-family: 'Tinos', Georgia, 'Noto Sans Hebrew', 'Noto Sans Arabic', 'Vazirmatn', serif;
+        }
+        .font-scripture {
+            font-family: 'Tinos', Georgia, serif;
+        }
+        html[data-theme="dark"] .bda-icon-sun { display: block; }
+        html[data-theme="dark"] .bda-icon-moon { display: none; }
+        html[data-theme="light"] .bda-icon-sun { display: none; }
+        html[data-theme="light"] .bda-icon-moon { display: block; }
+        html[data-theme="dark"] select option { background-color: #161615; color: #ecebe6; }
+        html[data-theme="light"] select option { background-color: #fffdf8; color: #1c1917; }
+
+        #bda-embed-bar { display: none; }
+        html[data-bda-embed="1"] #bda-global-nav,
+        html[data-bda-embed="1"] #bda-hero-header,
+        html[data-bda-embed="1"] #bda-footer-cta,
+        html[data-bda-embed="1"] .bda-hide-in-embed {
+            display: none !important;
+        }
+        html[data-bda-embed="1"] #bda-embed-bar {
+            display: flex !important;
+        }
+
+        .bda-card {
+            background-color: var(--bda-surface);
+            border: 1px solid var(--bda-border);
+            border-radius: 0.85rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        .bda-card-muted {
+            background-color: var(--bda-surface-muted);
+            border: 1px solid var(--bda-border);
+            border-radius: 0.75rem;
+        }
+        .bda-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            border: 1px solid var(--bda-border);
+            background-color: var(--bda-surface-muted);
+            color: var(--bda-text);
+            border-radius: 999px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            line-height: 1.2;
+            cursor: pointer;
+            transition: all 0.16s ease;
+        }
+        .bda-pill:hover { border-color: var(--bda-accent); color: var(--bda-accent); }
+        .bda-pill.active {
+            background-color: var(--bda-accent);
+            color: var(--bda-accent-text);
+            border-color: var(--bda-accent);
+        }
+        .bda-pill.mastered {
+            background-color: var(--zone-gospel-soft);
+            color: var(--zone-gospel);
+            border-color: var(--zone-gospel);
+        }
+        .studio-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.1rem;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--bda-text-muted);
+            border-bottom: 3px solid transparent;
+            background: transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.16s ease;
+        }
+        .studio-tab-btn:hover { color: var(--bda-text); background-color: var(--bda-surface-muted); }
+        .studio-tab-btn.active {
+            color: var(--bda-accent);
+            border-bottom-color: var(--bda-accent);
+            background-color: var(--bda-surface);
+        }
+        .bda-callout {
+            border-inline-start: 4px solid var(--bda-accent);
+            background-color: var(--bda-surface-muted);
+            padding: 0.85rem 1rem;
+            border-radius: 0.5rem;
+        }
+        .bda-callout-gospel {
+            border-inline-start: 4px solid var(--zone-gospel);
+            background-color: var(--zone-gospel-soft);
+            padding: 0.85rem 1rem;
+            border-radius: 0.5rem;
+        }
+        .bda-callout-warn {
+            border-inline-start: 4px solid var(--zone-warn);
+            background-color: var(--zone-warn-soft);
+            padding: 0.85rem 1rem;
+            border-radius: 0.5rem;
+        }
+        .bda-input {
+            background-color: var(--bda-surface);
+            border: 1px solid var(--bda-border);
+            color: var(--bda-text);
+            border-radius: 0.55rem;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.86rem;
+            outline: none;
+            width: 100%;
+        }
+        .bda-input:focus {
+            border-color: var(--bda-accent);
+            box-shadow: 0 0 0 2px var(--bda-accent-soft);
+        }
+        .choice-card-btn {
+            display: block;
+            width: 100%;
+            text-align: start;
+            background-color: var(--bda-surface);
+            border: 1px solid var(--bda-border);
+            color: var(--bda-text);
+            border-radius: 0.65rem;
+            padding: 0.78rem 0.95rem;
+            font-size: 0.86rem;
+            line-height: 1.45;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .choice-card-btn:hover:not(:disabled) {
+            border-color: var(--bda-accent);
+            background-color: var(--bda-surface-muted);
+        }
+        .choice-card-btn.selected-correct {
+            border-color: var(--zone-gospel) !important;
+            background-color: var(--zone-gospel-soft) !important;
+        }
+        .choice-card-btn.selected-wrong {
+            border-color: var(--zone-warn) !important;
+            background-color: var(--zone-warn-soft) !important;
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: bdaFadeIn 0.2s ease; }
+        @keyframes bdaFadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #bda-toast {
+            position: fixed;
+            bottom: 1.25rem;
+            inset-inline-end: 1.25rem;
+            z-index: 99999;
+            background-color: var(--bda-surface);
+            color: var(--bda-text);
+            border: 2px solid var(--bda-accent);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+        #bda-toast.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <!-- Standalone Top Global Navbar (Hidden in LearnDash ?embed=1 Mode) -->
+    <nav id="bda-global-nav" aria-label="Bible Doctrine Academy Navigation" style="padding: 6px 18px; background: var(--bda-surface); border-bottom: 1px solid var(--bda-border); color: var(--bda-text); font-size: 12px; line-height: 1.4; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; z-index: 9999; width: 100%;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <a href="https://www.bibledoc.academy/" style="display: inline-flex; align-items: center; gap: 6px; color: var(--bda-text); text-decoration: none; font-weight: 700; font-size: 12px;">
+                <span style="background: var(--bda-accent); color: var(--bda-accent-text); padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 800; letter-spacing: 0.04em;">BDA</span>
+                <span data-i18n="nav_academy">Bible Doctrine Academy</span>
+            </a>
+            <span style="color: var(--bda-border);">&middot;</span>
+            <a href="https://www.bibledoc.academy/free-tools/" style="color: var(--bda-text-muted); text-decoration: none; font-weight: 500;" data-i18n="nav_free_tools">Free Tools</a>
+            <span style="color: var(--bda-border);">&middot;</span>
+            <a href="https://www.bibledoc.academy/courses/" style="color: var(--bda-text-muted); text-decoration: none; font-weight: 500;" data-i18n="nav_all_courses">All Courses</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <a href="https://www.bibledoc.academy/courses/certificate-in-basic-management-and-leadership/" target="_blank" rel="noopener noreferrer" style="border: 1px solid var(--bda-border); border-radius: 999px; background: var(--bda-surface-muted); color: var(--bda-text-muted); padding: 2px 10px; font-size: 11px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                <span>🏛️ <span data-i18n="nav_cert_badge">Cert 3: BML 101–105</span></span>
+                <span style="font-size: 10px;">↗</span>
+            </a>
+            <select id="lang-select" onchange="setLanguage(this.value)" aria-label="Select Language" style="background: var(--bda-surface-muted); color: var(--bda-text); border: 1px solid var(--bda-border); border-radius: 6px; padding: 2px 6px; font-size: 12px; font-weight: 600; cursor: pointer; outline: none;">
+                <option value="en">EN - English</option>
+                <option value="es">ES - Español</option>
+                <option value="pt">PT - Português</option>
+                <option value="fr">FR - Français</option>
+                <option value="id">ID - Bahasa Indonesia</option>
+                <option value="tl">TL - Tagalog</option>
+                <option value="he">HE - עברית (Hebrew)</option>
+                <option value="ar">AR - العربية (Arabic)</option>
+                <option value="fa">FA - فارسی (Persian)</option>
+            </select>
+            <button type="button" onclick="toggleBdaTheme()" aria-label="Toggle Light/Dark Theme" title="Toggle Light/Dark Theme" style="width: 28px; height: 26px; border: 1px solid var(--bda-border); border-radius: 6px; background: var(--bda-surface-muted); color: var(--bda-text); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0;">
+                <svg class="bda-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                <svg class="bda-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+            <a id="bda-nav-cta" href="https://www.bibledoc.academy/pricing/" target="_blank" rel="noreferrer" class="bda-hide-in-embed" style="background: var(--bda-accent); color: var(--bda-accent-text); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-decoration: none; white-space: nowrap;" data-i18n="nav_cta">$1 Bible Academy</a>
+        </div>
+    </nav>
+
+    <!-- Sleek Compact LearnDash Embed Bar (Shown ONLY when ?embed=1 or iframe) -->
+    <div id="bda-embed-bar" style="padding: 8px 16px; background: var(--bda-surface); border-bottom: 1px solid var(--bda-border); align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="background: var(--bda-accent-soft); color: var(--bda-accent); border: 1px solid var(--bda-accent); padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 800;">BML 101–105</span>
+            <strong style="font-size: 13.5px; color: var(--bda-text);" data-i18n="hero_title">Ecclesia &amp; Shepherd Studio</strong>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span id="embed-mastery-pill" class="bda-pill mastered" style="cursor: default;">✓ 0 / 24 Mastered</span>
+            <select id="embed-lang-select" onchange="setLanguage(this.value)" aria-label="Select Studio Language" style="background: var(--bda-surface-muted); color: var(--bda-text); border: 1px solid var(--bda-border); border-radius: 6px; padding: 2px 6px; font-size: 12px; font-weight: 600; cursor: pointer; outline: none;">
+                <option value="en">EN - English</option>
+                <option value="es">ES - Español</option>
+                <option value="pt">PT - Português</option>
+                <option value="fr">FR - Français</option>
+                <option value="id">ID - Bahasa Indonesia</option>
+                <option value="tl">TL - Tagalog</option>
+                <option value="he">HE - עברית</option>
+                <option value="ar">AR - العربية</option>
+                <option value="fa">FA - فارسی</option>
+            </select>
+            <button type="button" onclick="toggleBdaTheme()" aria-label="Toggle Light/Dark Theme" title="Toggle Light/Dark Theme" style="width: 28px; height: 26px; border: 1px solid var(--bda-border); border-radius: 6px; background: var(--bda-surface-muted); color: var(--bda-text); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0;">
+                <svg class="bda-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                <svg class="bda-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Header (Hidden in ?embed=1 Mode) -->
+    <header id="bda-hero-header" class="max-w-7xl mx-auto px-4 sm:px-6 pt-7 pb-5">
+        <div class="bda-card p-6 sm:p-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-2.5">
+                        <span class="bda-pill" style="cursor:default; background:var(--bda-accent-soft); color:var(--bda-accent); border-color:var(--bda-accent);">🏛️ <span data-i18n="hero_kicker">Certificate 3 Flagship Studio • BML 101–105</span></span>
+                        <span class="bda-pill" style="cursor:default;">BSB Public-Domain Scripture</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight" style="color:var(--bda-text);" data-i18n="hero_title">Ecclesia &amp; Shepherd Studio</h1>
+                    <p class="mt-2 text-sm sm:text-base max-w-3xl" style="color:var(--bda-text-muted);" data-i18n="hero_sub">Master Spirit-empowered church polity, servant-shepherd leadership qualifications, first-century Corinthian pastoral jurisprudence, and Christ-centered biblical soul care.</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2.5 shrink-0">
+                    <div class="bda-card-muted px-3.5 py-2.5 text-center">
+                        <div class="text-xs font-semibold uppercase tracking-wider" style="color:var(--bda-text-muted);" data-i18n="kpi_mastered">Mastered</div>
+                        <div id="hero-mastery-val" class="text-lg font-extrabold mt-0.5" style="color:var(--bda-accent);">0 / 24</div>
+                    </div>
+                    <div class="bda-card-muted px-3.5 py-2.5 text-center">
+                        <div class="text-xs font-semibold uppercase tracking-wider" style="color:var(--bda-text-muted);" data-i18n="kpi_exam">Best Exam</div>
+                        <div id="hero-quiz-val" class="text-lg font-extrabold mt-0.5" style="color:var(--zone-gospel);">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sticky Studio Tab Bar -->
+    <div style="position: sticky; top: 0; z-index: 50; background: var(--bda-surface); border-top: 1px solid var(--bda-border); border-bottom: 1px solid var(--bda-border);">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 flex items-center overflow-x-auto" role="tablist" aria-label="Studio Modules">
+            <button type="button" role="tab" id="tab-btn-polity" class="studio-tab-btn active" onclick="switchTab('polity')">
+                <span>🏛️</span>
+                <span data-i18n="tab_polity">1. Servant-Shepherd &amp; Polity</span>
+                <span id="badge-polity" class="bda-pill" style="padding: 1px 7px; font-size: 11px;">0/8</span>
+            </button>
+            <button type="button" role="tab" id="tab-btn-corinthians" class="studio-tab-btn" onclick="switchTab('corinthians')">
+                <span>⚖️</span>
+                <span data-i18n="tab_corinthians">2. Corinthian Jurisprudence</span>
+                <span id="badge-corinthians" class="bda-pill" style="padding: 1px 7px; font-size: 11px;">0/8</span>
+            </button>
+            <button type="button" role="tab" id="tab-btn-counseling" class="studio-tab-btn" onclick="switchTab('counseling')">
+                <span>🕊️</span>
+                <span data-i18n="tab_counseling">3. Biblical Soul Care Lab</span>
+                <span id="badge-counseling" class="bda-pill" style="padding: 1px 7px; font-size: 11px;">0/8</span>
+            </button>
+            <button type="button" role="tab" id="tab-btn-quiz" class="studio-tab-btn" onclick="switchTab('quiz')">
+                <span>🎓</span>
+                <span data-i18n="tab_quiz">4. Mastery Exam (15 Qs)</span>
+                <span id="badge-quiz" class="bda-pill" style="padding: 1px 7px; font-size: 11px;">0%</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Interactive Workspace -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        <!-- TAB 1: SERVANT-SHEPHERD & CHURCH POLITY LAB -->
+        <section id="panel-polity" class="tab-panel active" role="tabpanel" aria-labelledby="tab-btn-polity">
+            <div class="bda-card p-5 sm:p-6 mb-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                    <div>
+                        <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--bda-accent);">BML-101 &bull; BML-105 &bull; IML-205 &bull; ECCLESIOLOGY &amp; LEADERSHIP</div>
+                        <h2 class="text-xl sm:text-2xl font-bold mt-1" data-i18n="polity_heading">Canonical Servant-Shepherd &amp; New Testament Polity Matrix</h2>
+                        <p class="text-sm mt-1" style="color:var(--bda-text-muted);" data-i18n="polity_desc">Select each of the 8 biblical leadership &amp; office archetypes below to inspect original Hebrew/Greek office terms, pastoral qualifications, and failure-mode safeguards.</p>
+                    </div>
+                    <div id="polity-filter-bar" class="flex flex-wrap gap-1.5">
+                        <button type="button" class="bda-pill active" onclick="filterPolity('ALL', this)" data-i18n="filter_all">All (8)</button>
+                        <button type="button" class="bda-pill" onclick="filterPolity('OT', this)">OT Models</button>
+                        <button type="button" class="bda-pill" onclick="filterPolity('CHRIST', this)">Christ &amp; Acts</button>
+                        <button type="button" class="bda-pill" onclick="filterPolity('PASTORAL', this)">Pastoral Epistles</button>
+                    </div>
+                </div>
+                <div id="polity-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6"></div>
+                <div id="polity-detail" class="bda-card-muted p-5 sm:p-6"></div>
+            </div>
+
+            <!-- Interactive 1 Timothy 3 / 1 Peter 5 Qualification Self-Audit -->
+            <div class="bda-card p-5 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                    <div>
+                        <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--bda-accent);">1 TIMOTHY 3:1–13 &bull; TITUS 1:5–9 &bull; 1 PETER 5:1–4</div>
+                        <h3 class="text-lg sm:text-xl font-bold mt-0.5 font-serif-title" data-i18n="audit_heading">Interactive Shepherd Character &amp; Household Readiness Diagnostic</h3>
+                        <p class="text-xs sm:text-sm mt-0.5" style="color:var(--bda-text-muted);" data-i18n="audit_sub">Rate 6 biblical leadership dimensions (1–5) to generate an actionable character formation &amp; accountability profile.</p>
+                    </div>
+                    <span id="audit-score-pill" class="bda-pill mastered" style="cursor:default;">Readiness: 24 / 30 (80%)</span>
+                </div>
+                <div id="audit-sliders" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div id="audit-feedback" class="bda-callout mt-4 text-sm"></div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CORINTHIAN PASTORAL JURISPRUDENCE LAB -->
+        <section id="panel-corinthians" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-corinthians">
+            <div class="bda-card p-5 sm:p-6">
+                <div class="mb-4">
+                    <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--bda-accent);">BML-103 &bull; 1 &amp; 2 CORINTHIANS PASTORAL JURISPRUDENCE</div>
+                    <h2 class="text-xl sm:text-2xl font-bold mt-1" data-i18n="cor_heading">First-Century Corinthian Crisis &amp; Apostolic Verdict Simulator</h2>
+                    <p class="text-sm mt-1" style="color:var(--bda-text-muted);" data-i18n="cor_desc">Examine all 8 crisis dockets from ancient Corinth, choose how you would rule as shepherd-elder, and unlock Paul's cross-centered apostolic theology.</p>
+                </div>
+                <div id="cor-selector" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 mb-6"></div>
+                <div id="cor-workspace"></div>
+            </div>
+        </section>
+
+        <!-- TAB 3: BIBLICAL SOUL CARE & COACHING SIMULATOR -->
+        <section id="panel-counseling" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-counseling">
+            <div class="bda-card p-5 sm:p-6">
+                <div class="mb-4">
+                    <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--bda-accent);">BML-104 &bull; IML-203 &bull; AML-303 &bull; CHRIST-CENTERED SOUL CARE</div>
+                    <h2 class="text-xl sm:text-2xl font-bold mt-1" data-i18n="care_heading">Biblical Soul Care, Triage &amp; Pastoral Coaching Workbench</h2>
+                    <p class="text-sm mt-1" style="color:var(--bda-text-muted);" data-i18n="care_desc">Listen carefully to each counselee, discern between moralism, secular reductionism, and Christ-centered soul care, and export a Scripture-anchored Care Plan (.md).</p>
+                </div>
+                <div id="care-selector" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 mb-6"></div>
+                <div id="care-workspace"></div>
+            </div>
+        </section>
+
+        <!-- TAB 4: 15-QUESTION MASTERY EXAM -->
+        <section id="panel-quiz" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-quiz">
+            <div class="bda-card p-5 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 mb-5 border-b" style="border-color:var(--bda-border);">
+                    <div>
+                        <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--bda-accent);">CERTIFICATE 3 EXAM PREP &bull; BML 101–105</div>
+                        <h2 class="text-xl sm:text-2xl font-bold mt-1" data-i18n="quiz_heading">15-Question Pastoral Leadership, Polity &amp; Soul Care Exam</h2>
+                        <p class="text-sm mt-1" style="color:var(--bda-text-muted);" data-i18n="quiz_desc">Score 70% or higher to earn full Study Passport Mastery credit for Certificate 3.</p>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <span id="quiz-score-live" class="bda-pill mastered" style="cursor:default;">Score: 0 / 15 (0%)</span>
+                        <button type="button" class="bda-pill" onclick="resetQuiz()" data-i18n="btn_retry_quiz">↻ Reset Exam</button>
+                    </div>
+                </div>
+                <div id="quiz-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Standalone Footer CTA (Hidden in ?embed=1 Mode) -->
+    <footer id="bda-footer-cta" class="max-w-7xl mx-auto px-4 sm:px-6 pb-12 pt-4">
+        <div class="bda-card p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+            <div>
+                <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--bda-accent);">BIBLE DOCTRINE ACADEMY &bull; CERTIFICATE 3 TRACK</div>
+                <h3 class="text-xl font-bold mt-1 font-serif-title" data-i18n="footer_title">Ready to Earn Your Official Certificate in Basic Management &amp; Leadership?</h3>
+                <p class="text-sm mt-1 max-w-2xl" style="color:var(--bda-text-muted);" data-i18n="footer_sub">Complete BML 101–105 (Spirit-Empowered Church, Church Doctrines, Corinthians, Counseling Overview &amp; Leadership I) at Bible Doctrine Academy.</p>
+            </div>
+            <div class="flex flex-wrap gap-3 shrink-0">
+                <a href="https://www.bibledoc.academy/courses/certificate-in-basic-management-and-leadership/" target="_blank" rel="noopener noreferrer" class="bda-pill active" style="padding: 0.6rem 1.15rem; font-size: 0.85rem; text-decoration: none;" data-i18n="footer_btn_cert">Open Certificate 3 Track ↗</a>
+                <a href="https://www.bibledoc.academy/free-tools/" class="bda-pill" style="padding: 0.6rem 1.15rem; font-size: 0.85rem; text-decoration: none;" data-i18n="footer_btn_tools">All 21 Free Resources</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="bda-toast" role="status" aria-live="polite"></div>
+
+    <script>
+        const APP_SLUG = 'leadership-counseling';
+        const TOTAL_ITEMS = 24;
+
+        const I18N = {
+            en: {
+                nav_academy: "Bible Doctrine Academy", nav_free_tools: "Free Tools", nav_all_courses: "All Courses", nav_cert_badge: "Cert 3: BML 101–105", nav_cta: "$1 Bible Academy",
+                hero_kicker: "Certificate 3 Flagship Studio • BML 101–105",
+                hero_title: "Ecclesia & Shepherd Studio",
+                hero_sub: "Master Spirit-empowered church polity, servant-shepherd leadership qualifications, first-century Corinthian pastoral jurisprudence, and Christ-centered biblical soul care.",
+                kpi_mastered: "Mastered", kpi_exam: "Best Exam",
+                tab_polity: "1. Servant-Shepherd & Polity", tab_corinthians: "2. Corinthian Jurisprudence", tab_counseling: "3. Biblical Soul Care Lab", tab_quiz: "4. Mastery Exam (15 Qs)",
+                polity_heading: "Canonical Servant-Shepherd & New Testament Polity Matrix",
+                polity_desc: "Select each of the 8 biblical leadership & office archetypes below to inspect original Hebrew/Greek office terms, pastoral qualifications, and failure-mode safeguards.",
+                filter_all: "All (8)",
+                audit_heading: "Interactive Shepherd Character & Household Readiness Diagnostic",
+                audit_sub: "Rate 6 biblical leadership dimensions (1–5) to generate an actionable character formation & accountability profile.",
+                cor_heading: "First-Century Corinthian Crisis & Apostolic Verdict Simulator",
+                cor_desc: "Examine all 8 crisis dockets from ancient Corinth, choose how you would rule as shepherd-elder, and unlock Paul's cross-centered apostolic theology.",
+                care_heading: "Biblical Soul Care, Triage & Pastoral Coaching Workbench",
+                care_desc: "Listen carefully to each counselee, discern between moralism, secular reductionism, and Christ-centered soul care, and export a Scripture-anchored Care Plan (.md).",
+                quiz_heading: "15-Question Pastoral Leadership, Polity & Soul Care Exam",
+                quiz_desc: "Score 70% or higher to earn full Study Passport Mastery credit for Certificate 3.",
+                btn_retry_quiz: "↻ Reset Exam",
+                footer_title: "Ready to Earn Your Official Certificate in Basic Management & Leadership?",
+                footer_sub: "Complete BML 101–105 (Spirit-Empowered Church, Church Doctrines, Corinthians, Counseling Overview & Leadership I) at Bible Doctrine Academy.",
+                footer_btn_cert: "Open Certificate 3 Track ↗", footer_btn_tools: "All 21 Free Resources"
+            },
+            es: {
+                nav_academy: "Academia de Doctrina Bíblica", nav_free_tools: "Recursos Gratis", nav_all_courses: "60 Cursos", nav_cert_badge: "Cert 3: BML 101–105", nav_cta: "Academia $1/mes",
+                hero_kicker: "Estudio Insignia Certificado 3 • BML 101–105",
+                hero_title: "Estudio Eclesia y Cuidado Pastoral",
+                hero_sub: "Domine el gobierno eclesiástico lleno del Espíritu, el liderazgo siervo-pastor, la jurisprudencia pastoral en Corinto y la consejería bíblica cristocéntrica.",
+                kpi_mastered: "Dominados", kpi_exam: "Mejor Examen",
+                tab_polity: "1. Liderazgo y Gobierno", tab_corinthians: "2. Casos en Corinto", tab_counseling: "3. Cuidado Pastoral", tab_quiz: "4. Examen Final (15)",
+                polity_heading: "Matriz Canónica de Liderazgo Siervo-Pastor y Gobierno del NT",
+                polity_desc: "Seleccione cada uno de los 8 arquetipos bíblicos para examinar términos en hebreo/griego, requisitos pastorales y salvaguardas.",
+                filter_all: "Todos (8)",
+                audit_heading: "Diagnóstico Interactivo de Carácter Pastoral (1 Tim 3 / 1 Ped 5)",
+                audit_sub: "Evalúe 6 dimensiones bíblicas (1–5) para generar un perfil de formación espiritual y rendición de cuentas.",
+                cor_heading: "Simulador de Crisis en Corinto y Veredicto Apostólico",
+                cor_desc: "Analice los 8 casos pastorales de 1 y 2 Corintios, elija su dictamen como anciano-pastor y descubra la respuesta apostólica de Pablo.",
+                care_heading: "Laboratorio de Consejería Bíblica y Cuidado del Alma",
+                care_desc: "Escuche a cada aconsejado, discierna entre el moralismo, el reduccionismo secular y el cuidado cristocéntrico, y exporte su Plan Pastoral (.md).",
+                quiz_heading: "Examen de Liderazgo Pastoral, Gobierno y Consejería (15 Preguntas)",
+                quiz_desc: "Obtenga 70% o más para registrar el dominio completo en su Pasaporte de Estudio.",
+                btn_retry_quiz: "↻ Reiniciar Examen",
+                footer_title: "¿Listo para Obtener su Certificado Oficial en Gestión y Liderazgo Básico?",
+                footer_sub: "Complete BML 101–105 en Bible Doctrine Academy.",
+                footer_btn_cert: "Abrir Certificado 3 ↗", footer_btn_tools: "21 Recursos Gratuitos"
+            },
+            pt: {
+                nav_academy: "Academia de Doutrina Bíblica", nav_free_tools: "Recursos Grátis", nav_all_courses: "60 Cursos", nav_cert_badge: "Cert 3: BML 101–105", nav_cta: "Academia $1/mês",
+                hero_kicker: "Estúdio Principal Certificado 3 • BML 101–105",
+                hero_title: "Estúdio Eclesia e Cuidado Pastoral",
+                hero_sub: "Domine a governança eclesiástica capacitada pelo Espírito, liderança servo-pastor, casos pastorais em Corinto e aconselhamento bíblico cristocêntrico.",
+                kpi_mastered: "Dominados", kpi_exam: "Melhor Exame",
+                tab_polity: "1. Liderança e Governo", tab_corinthians: "2. Jurisprudência em Corinto", tab_counseling: "3. Aconselhamento Bíblico", tab_quiz: "4. Exame (15 Qs)",
+                polity_heading: "Matriz Canônica de Liderança Servo-Pastor e Governo do NT",
+                polity_desc: "Selecione os 8 arquétipos bíblicos de liderança para estudar termos em hebraico/grego, qualificações e salvaguardas.",
+                filter_all: "Todos (8)",
+                audit_heading: "Diagnóstico de Caráter Pastoral (1 Tm 3 / 1 Pe 5)",
+                audit_sub: "Avalie 6 dimensões bíblicas de liderança (1–5) para gerar um perfil prático de maturidade.",
+                cor_heading: "Simulador de Crises em Corinto e Veredito Apostólico",
+                cor_desc: "Examine os 8 casos de 1 e 2 Coríntios, decida como presbítero e veja o ensino cruciforme de Paulo.",
+                care_heading: "Laboratório de Cuidado da Alma e Coaching Pastoral",
+                care_desc: "Discirna entre moralismo, secularismo e cuidado cristocêntrico, exportando um Plano Pastoral em Markdown (.md).",
+                quiz_heading: "Exame de Liderança, Governo e Cuidado Pastoral (15 Questões)",
+                quiz_desc: "Alcance 70% ou mais para validar seu Passaporte de Estudo.",
+                btn_retry_quiz: "↻ Reiniciar Exame",
+                footer_title: "Pronto para Conquistar seu Certificado Oficial BML 101–105?",
+                footer_sub: "Conclua os 5 cursos de Gestão e Liderança Básica na Bible Doctrine Academy.",
+                footer_btn_cert: "Abrir Certificado 3 ↗", footer_btn_tools: "21 Recursos Gratuitos"
+            },
+            fr: {
+                nav_academy: "Académie de Doctrine Biblique", nav_free_tools: "Outils Gratuits", nav_all_courses: "60 Cours", nav_cert_badge: "Cert 3 : BML 101–105", nav_cta: "Académie à 1 $",
+                hero_kicker: "Studio Phare Certificat 3 • BML 101–105",
+                hero_title: "Studio Ecclésia & Soin Pastoral",
+                hero_sub: "Maîtrisez la gouvernance ecclésiale, le leadership serviteur-berger, la jurisprudence pastorale corinthienne et la relation d'aide christocentrique.",
+                kpi_mastered: "Maîtrisés", kpi_exam: "Meilleur Score",
+                tab_polity: "1. Berger & Gouvernance", tab_corinthians: "2. Cas de Corinthe", tab_counseling: "3. Relation d'Aide", tab_quiz: "4. Examen (15 Qs)",
+                polity_heading: "Matrice Canonique du Leadership Serviteur & Gouvernance du NT",
+                polity_desc: "Explorez les 8 archétypes bibliques du ministère avec leurs termes hébreux/grecs et critères pastoraux.",
+                filter_all: "Tous (8)",
+                audit_heading: "Diagnostic de Caractère Pastoral (1 Tim 3 / 1 Pi 5)",
+                audit_sub: "Évaluez 6 dimensions bibliques (1–5) pour bâtir un plan de croissance et de redevabilité.",
+                cor_heading: "Simulateur de Jurisprudence Pastorale aux Corinthiens",
+                cor_desc: "Analysez 8 crises de l'Église de Corinthe et découvrez le verdict apostolique centré sur la croix.",
+                care_heading: "Atelier de Relation d'Aide Biblique & Accompagnement",
+                care_desc: "Distinguez le moralisme, le réductionnisme séculier et le soin biblique centré sur Christ (.md).",
+                quiz_heading: "Examen de Maîtrise : Leadership, Gouvernance & Soin Pastoral",
+                quiz_desc: "Obtenez 70 % ou plus pour valider votre Passeport d'Étude.",
+                btn_retry_quiz: "↻ Réinitialiser",
+                footer_title: "Prêt à Obtenir Votre Certificat Officiel BML 101–105 ?",
+                footer_sub: "Suivez les 5 cours de Gestion et Leadership de Base sur Bible Doctrine Academy.",
+                footer_btn_cert: "Ouvrir le Certificat 3 ↗", footer_btn_tools: "21 Ressources Gratuites"
+            },
+            id: {
+                nav_academy: "Bible Doctrine Academy", nav_free_tools: "Alat Gratis", nav_all_courses: "Semua Kursus", nav_cert_badge: "Sert 3: BML 101–105", nav_cta: "Akademi $1/bln",
+                hero_kicker: "Studio Utama Sertifikat 3 • BML 101–105",
+                hero_title: "Studio Kepemimpinan & Konseling Alkitabiah",
+                hero_sub: "Kuasai tata gereja yang diberdayakan Roh, kualifikasi pemimpin-gembala, yurisprudensi pastoral Korintus, dan konseling alkitabiah yang berpusat pada Kristus.",
+                kpi_mastered: "Dikuasai", kpi_exam: "Skor Terbaik",
+                tab_polity: "1. Kepemimpinan & Tata Gereja", tab_corinthians: "2. Kasus Korintus", tab_counseling: "3. Konseling Alkitabiah", tab_quiz: "4. Ujian (15 Soal)",
+                polity_heading: "Matriks Kepemimpinan Hamba-Gembala & Tata Gereja PB",
+                polity_desc: "Pilih 8 arketipe kepemimpinan alkitabiah untuk mempelajari istilah Ibrani/Yunani dan kualifikasi penatua/diaken.",
+                filter_all: "Semua (8)",
+                audit_heading: "Diagnostik Karakter Gembala (1 Tim 3 / 1 Ptr 5)",
+                audit_sub: "Nilai 6 dimensi kepemimpinan alkitabiah (1–5) untuk profil pembinaan rohani.",
+                cor_heading: "Simulator Krisis Jemaat Korintus & Putusan Rasuli",
+                cor_desc: "Pelajari 8 kasus penggembalaan di 1 & 2 Korintus dan temukan prinsip teologi salib Paulus.",
+                care_heading: "Laboratorium Pemeliharaan Jiwa & Konseling Pastoral",
+                care_desc: "Bedakan moralisme, sekularisme, dan konseling berpusat pada Kristus serta ekspor Rencana Konseling (.md).",
+                quiz_heading: "Ujian Penguasaan Kepemimpinan & Konseling Pastoral (15 Soal)",
+                quiz_desc: "Raih minimal 70% untuk menyinkronkan Paspor Studi Anda.",
+                btn_retry_quiz: "↻ Ulangi Ujian",
+                footer_title: "Siap Meraih Sertifikat Resmi Manajemen & Kepemimpinan Dasar?",
+                footer_sub: "Selesaikan BML 101–105 di Bible Doctrine Academy.",
+                footer_btn_cert: "Buka Sertifikat 3 ↗", footer_btn_tools: "21 Sumber Gratis"
+            },
+            tl: {
+                nav_academy: "Bible Doctrine Academy", nav_free_tools: "Libreng Kagamitan", nav_all_courses: "Lahat ng Kurso", nav_cert_badge: "Cert 3: BML 101–105", nav_cta: "$1 Bible Academy",
+                hero_kicker: "Flagship Studio ng Certificate 3 • BML 101–105",
+                hero_title: "Ecclesia & Shepherd Care Studio",
+                hero_sub: "Pag-aralan ang pamamahala ng iglesya, katangian ng lingkod-pastol, mga kaso sa Corinto, at pagpapayong nakasentro kay Kristo.",
+                kpi_mastered: "Natutunan", kpi_exam: "Pinakamataas",
+                tab_polity: "1. Pamumuno at Iglesya", tab_corinthians: "2. Mga Kaso sa Corinto", tab_counseling: "3. Pagpapayong Biblikal", tab_quiz: "4. Pagsusulit (15)",
+                polity_heading: "Modelo ng Lingkod-Pastol at Pamamahala sa Bagong Tipan",
+                polity_desc: "Piliin ang 8 modelo ng pamumuno sa Bibliya upang suriin ang mga terminong Hebreo/Griyego at pamantayan.",
+                filter_all: "Lahat (8)",
+                audit_heading: "Pagsusuri ng Katangian ng Pastol (1 Tim 3 / 1 Ped 5)",
+                audit_sub: "Markahan ang 6 na katangian (1–5) para sa paglago sa ministeryo.",
+                cor_heading: "Simulator ng mga Krisis sa Corinto at Hatol ni Pablo",
+                cor_desc: "Suriin ang 8 usapin sa 1 at 2 Corinto at tuklasin ang karunungan ng krus.",
+                care_heading: "Laboratoryo ng Pagpapayong Biblikal at Pangangalaga sa Kaluluwa",
+                care_desc: "Kilalanin ang kaibahan ng moralismo at pagpapayong nakaugat sa Kasulatan (.md).",
+                quiz_heading: "15-Tanong na Pagsusulit sa Pamumuno at Pagpapayo",
+                quiz_desc: "Kumuha ng 70% pataas para sa Study Passport Mastery.",
+                btn_retry_quiz: "↻ Ulitin ang Quiz",
+                footer_title: "Handa Ka Na Bang Kunin ang Certificate 3 (BML 101–105)?",
+                footer_sub: "Tapusin ang BML 101–105 sa Bible Doctrine Academy.",
+                footer_btn_cert: "Buksan ang Certificate 3 ↗", footer_btn_tools: "21 Libreng Kagamitan"
+            },
+            he: {
+                nav_academy: "האקדמיה לדוקטרינה מקראית", nav_free_tools: "כלים חינמיים", nav_all_courses: "כל הקורסים", nav_cert_badge: "תעודה 3: BML 101–105", nav_cta: "אקדמיה ב-$1",
+                hero_kicker: "סטודיו הדגל לתעודה 3 • BML 101–105",
+                hero_title: "סטודיו הנהגה וייעוץ רוחני מקראי",
+                hero_sub: "שלטו במבנה הקהילה בברית החדשה, מנהיגות רועה-משרת, סוגיות רועיות באיגרות אל הקורינתים וליווי רוחני מבוסס כתובים.",
+                kpi_mastered: "נלמדו", kpi_exam: "ציון שיא",
+                tab_polity: "1. מנהיגות רועה וממשל", tab_corinthians: "2. סוגיות בקורינתוס", tab_counseling: "3. מעבדת ייעוץ מקראי", tab_quiz: "4. מבחן שליטה (15)",
+                polity_heading: "מטריצת מנהיגות רועה-משרת והנהגת הקהילה",
+                polity_desc: "בחרו בכל אחד מ-8 דפוסי המנהיגות המקראיים לעיון במונחי המקור בעברית וביוונית ובאמות המידה המוסריות.",
+                filter_all: "הכול (8)",
+                audit_heading: "אבחון עצמי לאופי הרועה והנהגת הבית (טימותיאוס א׳ ג׳)",
+                audit_sub: "דרגו 6 תחומי אחריות (1–5) לקבלת משוב רוחני מעשי.",
+                cor_heading: "סימולטור משברי קורינתוס ופסיקת השליח שאול",
+                cor_desc: "בחנו 8 מקרי אמת מאיגרות הקורינתים ובחרו את המענה הרועי הנאמן לכתובים.",
+                care_heading: "מעבדת ליווי רוחני וייעוץ מקראי",
+                care_desc: "הבחינו בין הטפה מוסרנית שטחית לבין מרפא רוחני מבוסס בשורה וייצאו תוכנית טיפול (.md).",
+                quiz_heading: "מבחן מסכם: מנהיגות, קהילה וייעוץ מקראי (15 שאלות)",
+                quiz_desc: "השיגו 70% ומעלה להשלמת דרכון הלמידה.",
+                btn_retry_quiz: "↻ איפוס מבחן",
+                footer_title: "מוכנים לקבל את תעודה 3 הרשמית בניהול ומנהיגות?",
+                footer_sub: "השלימו את קורסי BML 101–105 באקדמיה לדוקטרינה מקראית.",
+                footer_btn_cert: "למסלול תעודה 3 ↗", footer_btn_tools: "21 משאבים חינמיים"
+            },
+            ar: {
+                nav_academy: "أكاديمية العقيدة الكتابية", nav_free_tools: "أدوات مجانية", nav_all_courses: "جميع الدورات", nav_cert_badge: "شهادة 3: BML 101–105", nav_cta: "أكاديمية بـ 1$",
+                hero_kicker: "الاستوديو الرئيسي للشهادة 3 • BML 101–105",
+                hero_title: "استوديو القيادة الكنسية والرعاية الرعوية",
+                hero_sub: "أتقن نظام الكنيسة المملوءة بالروح، ومؤهلات القائد الراعي الخادم، والقضاء الرعوي في كورنثوس، والإرشاد الكتابي المتمركز حول المسيح.",
+                kpi_mastered: "مُتقَن", kpi_exam: "أفضل نتيجة",
+                tab_polity: "1. القيادة والنظام الكنسي", tab_corinthians: "2. قضايا كورنثوس", tab_counseling: "3. مختبر الإرشاد الكتابي", tab_quiz: "4. اختبار الإتقان (15)",
+                polity_heading: "مصفوفة القيادة الخادمة ونظام الكنيسة في العهد الجديد",
+                polity_desc: "اختر أياً من النماذج الكتابية الثمانية لدراسة المصطلحات العبرية واليونانية ومؤهلات الشيوخ والشمامسة.",
+                filter_all: "الكل (8)",
+                audit_heading: "التشخيص الذاتي لنضج الراعي وتدبير البيت (1 تي 3 / 1 بط 5)",
+                audit_sub: "قيّم 6 أبعاد كتابية (1–5) لبناء خطة نمو ومساءلة روحية.",
+                cor_heading: "محاكي أزمات كنيسة كورنثوس والحكم الرسولي",
+                cor_desc: "ادرس 8 قضايا رعوية في رسالتي كورنثوس واختر القرار الرعوي الصحيح.",
+                care_heading: "ورشة رعاية النفوس والإرشاد الرعوي الكتابي",
+                care_desc: "ميّز بين الوعظ السطحي والإرشاد الكتابي المتمركز حول المسيح وصدّر خطة الرعاية (.md).",
+                quiz_heading: "اختبار القيادة الرعوية والإرشاد الكتابي (15 سؤالاً)",
+                quiz_desc: "احصل على 70% فأكثر لتوثيق الإتقان في جواز الدراسة.",
+                btn_retry_quiz: "↻ إعادة الاختبار",
+                footer_title: "هل أنت مستعد لنيل الشهادة الرسمية في الإدارة والقيادة الأساسية؟",
+                footer_sub: "أكمل مقررات BML 101–105 في أكاديمية العقيدة الكتابية.",
+                footer_btn_cert: "فتح مسار الشهادة 3 ↗", footer_btn_tools: "21 مورداً مجانياً"
+            },
+            fa: {
+                nav_academy: "آکادمی آموزه‌های کتاب‌مقدس", nav_free_tools: "ابزارهای رایگان", nav_all_courses: "همه دوره‌ها", nav_cert_badge: "گواهینامه ۳: BML 101–105", nav_cta: "آکادمی ۱ دلاری",
+                hero_kicker: "استودیوی اصلی گواهینامه ۳ • BML 101–105",
+                hero_title: "استودیو رهبری کلیسایی و مشاوره شبانی",
+                hero_sub: "بر ساختار کلیسای پر از روح، ویژگی‌های رهبرِ شبان-خادم، داوری‌های شبانی در قرنتس و مشاوره کتاب‌مقدسی مسیح‌محور مسلط شوید.",
+                kpi_mastered: "تسلط یافته", kpi_exam: "بهترین نمره",
+                tab_polity: "1. رهبری شبانی و ساختار کلیسا", tab_corinthians: "2. پرونده‌های قرنتیان", tab_counseling: "3. آزمایشگاه مشاوره کتاب‌مقدسی", tab_quiz: "4. آزمون جامع (۱۵ سؤال)",
+                polity_heading: "ماتریس رهبری خادم-شبان و مدیریت کلیسا در عهد جدید",
+                polity_desc: "هر یک از ۸ الگوی کتاب‌مقدسی را برای بررسی واژگان عبری/یونانی، شرایط مشایخ و شماسان و آسیب‌شناسی رهبری انتخاب کنید.",
+                filter_all: "همه (۸)",
+                audit_heading: "ارزیابی شخصیت شبانی و مدیریت خانواده (اول تیموتائوس ۳)",
+                audit_sub: "۶ بُعد کتاب‌مقدسی رهبری را از ۱ تا ۵ امتیاز دهید.",
+                cor_heading: "شبیه‌ساز بحران‌های کلیسای قرنتس و حکم رسولی پولس",
+                cor_desc: "۸ پرونده واقعی از اول و دوم قرنتیان را بررسی کرده و حکم شبانی درست را برگزینید.",
+                care_heading: "میزکار مراقبت روحانی و مشاوره شبانی کتاب‌مقدسی",
+                care_desc: "تفاوت میان اخلاق‌گرایی سطحی، روان‌شناسی صرفاً سکولار و مراقبت مسیح‌محور را تشخیص دهید (.md).",
+                quiz_heading: "آزمون ۱۵ سؤالی رهبری، مدیریت کلیسا و مشاوره شبانی",
+                quiz_desc: "کسب حداقل ۷۰٪ برای ثبت کامل در گذرنامه مطالعاتی.",
+                btn_retry_quiz: "↻ شروع مجدد آزمون",
+                footer_title: "آماده دریافت گواهینامه رسمی مدیریت و رهبری پایه هستید؟",
+                footer_sub: "دوره‌های BML 101–105 را در آکادمی آموزه‌های کتاب‌مقدس بگذرانید.",
+                footer_btn_cert: "ورود به گواهینامه ۳ ↗", footer_btn_tools: "۲۱ منبع رایگان"
+            }
+        };
+
+        const POLITY_MODELS = [
+            {
+                id: 'pol-1', group: 'OT', ref: 'Exodus 18:13–27',
+                title: 'Moses & Jethro: Shared Judicial Delegation',
+                term: 'שָׂרִים (Sarim — Capable Stewards)',
+                course: 'BML-105 • IML-205',
+                bsb: '“Select capable men from among all the people—men who fear God, trustworthy men who hate dishonest gain—and appoint them over thousands, hundreds, fifties, and tens.” (Exodus 18:21, BSB)',
+                quals: ['God-fearing reverence (Yirat Elohim)', 'Proven trustworthiness & reliability', 'Incorruptible — hating dishonest financial gain', 'Clear tiering so major doctrinal cases still reach senior oversight'],
+                pitfall: 'Solo-hero bottlenecking (“The thing you are doing is not good; you will surely wear yourself out,” Exod 18:17–18) that exhausts both pastor and congregation.',
+                practice: 'Equip lay small-group shepherds (tens/fifties) with clear care thresholds while elders focus on Word, prayer, and complex doctrinal matters.'
+            },
+            {
+                id: 'pol-2', group: 'OT', ref: 'Nehemiah 2:17–18; 4:16–18',
+                title: 'Nehemiah: Prayerful Vision & Distributed Stewardship',
+                term: 'בָּנָה (Banah — Co-Laboring Builders)',
+                course: 'BML-105 • IML-205',
+                bsb: '“Come, let us rebuild the wall of Jerusalem, so that we will no longer be a disgrace.” (Nehemiah 2:17, BSB)',
+                quals: ['Secret intercessory prayer before public strategy (Neh 1:4–11)', 'Honest assessment of brokenness (“midnight inspection,” Neh 2:12–15)', 'Side-by-side family & household ownership (Neh 3)', 'Refusal to exploit the poor economically (Neh 5:14–15)'],
+                pitfall: 'Vision-casting detached from personal sacrifice, financial integrity, or spiritual vigilance (“trowel in one hand, sword in the other”).',
+                practice: 'Pair every ministry initiative with intercessory prayer teams, transparent financial stewardship, and household-level participation.'
+            },
+            {
+                id: 'pol-3', group: 'OT', ref: 'Ezekiel 34:1–16 & Psalm 23',
+                title: 'True Shepherd Care vs. Hireling Exploitation',
+                term: 'רֹעֶה (Ro’eh — Covenant Shepherd)',
+                course: 'BML-101 • BML-104',
+                bsb: '“I will seek the lost, bring back the strays, bind up the broken, and strengthen the weak…” (Ezekiel 34:16, BSB)',
+                quals: ['Feeding the flock rather than feeding on the flock (Ezek 34:2–3)', 'Binding up the wounded and pursuing scattered sheep', 'Leading beside quiet waters & restoring the soul (Ps 23:2–3)', 'Accountability to YHWH the Chief Shepherd'],
+                pitfall: 'Harsh domination, celebrity self-enrichment, and neglecting weak or hurting members on the margins.',
+                practice: 'Establish a weekly pastoral visitation & follow-up rhythm so no absent, grieving, or wounded member goes unnoticed.'
+            },
+            {
+                id: 'pol-4', group: 'CHRIST', ref: 'Mark 10:42–45 & John 13:1–17',
+                title: 'Christological Inverted Pyramid (Ransom Diakonia)',
+                term: 'διάκονος / δοῦλος (Diakonos & Doulos)',
+                course: 'BML-101 • BML-105',
+                bsb: '“For even the Son of Man did not come to be served, but to serve, and to give His life as a ransom for many.” (Mark 10:45, BSB)',
+                quals: ['Rejection of Gentile authoritarian “lording over” (katakyrieuō)', 'Towel-and-basin humility rooted in secure identity in the Father (John 13:3–5)', 'Cruciform sacrifice for the spiritual good of others', 'Greatness measured by downward service, not platform rank'],
+                pitfall: 'Importing secular CEO authoritarianism or status hierarchy into Christ’s blood-bought household.',
+                practice: 'Model visible, unglamorous service from senior leadership downward and audit board culture for humility.'
+            },
+            {
+                id: 'pol-5', group: 'CHRIST', ref: 'Acts 6:1–7',
+                title: 'Spirit-Empowered Elder & Deacon Synergy',
+                term: 'διακονία τοῦ λόγου / τραπεζῶν (Word & Tables)',
+                course: 'BML-101',
+                bsb: '“Brothers, select from among you seven men confirmed to be full of the Spirit and wisdom. We will appoint this responsibility to them and will devote ourselves to prayer and to the ministry of the word.” (Acts 6:3–4, BSB)',
+                quals: ['Full of the Holy Spirit and practical wisdom (plēreis pneumatos kai sophias)', 'Cross-cultural fairness (Hellenistic & Hebraic widows cared for equitably)', 'Protection of apostolic prayer and Word ministry', 'Result: “The word of God continued to spread” (Acts 6:7)'],
+                pitfall: 'Either neglecting mercy ministry to vulnerable members OR burying pastors in administrative logistics until prayer and preaching wither.',
+                practice: 'Maintain distinct yet unified elder (prayer/teaching/oversight) and deacon (mercy/stewardship/unity) teams.'
+            },
+            {
+                id: 'pol-6', group: 'PASTORAL', ref: '1 Timothy 3:1–7',
+                title: 'Overseer (Episkopos) Character & Household Matrix',
+                term: 'ἐπίσκοπος (Episkopos — Guardian-Overseer)',
+                course: 'BML-101 • BML-105',
+                bsb: '“An overseer, then, must be above reproach, the husband of but one wife, temperate, self-controlled, respectable, hospitable, able to teach…” (1 Timothy 3:2, BSB)',
+                quals: ['Above reproach (anepilēmptos) in public & private life', 'Gentle, not violent or quarrelsome, free from love of money', 'Manages his own household well with dignified warmth (3:4–5)', 'Not a recent convert (lest pride bring condemnation) & well-thought-of by outsiders'],
+                pitfall: 'Elevating charismatic gifting or donor wealth rapidly while ignoring domestic health, temper, or spiritual novice pride.',
+                practice: 'Require unhurried character observation, spouse/family peace verification, and sound teaching aptitude before ordination.'
+            },
+            {
+                id: 'pol-7', group: 'PASTORAL', ref: '1 Timothy 3:8–13',
+                title: 'Tested Deacon (Diakonos) & Ministry Team Integrity',
+                term: 'διάκονος (Diakonos — Tested Servant-Officer)',
+                course: 'BML-101 • BML-105',
+                bsb: '“They must also first be tested; and then, if there is nothing against them, let them serve as deacons.” (1 Timothy 3:10, BSB)',
+                quals: ['Dignified, not double-tongued (mē dilogous), trustworthy in speech', 'Not greedy for dishonest gain — safe with benevolence funds', 'Holding the mystery of the faith with a clear conscience (3:9)', 'Tested season of faithful service prior to formal office'],
+                pitfall: 'Treating the diaconate as a mere property committee without doctrinal conscience or confidentiality standards.',
+                practice: 'Train deacons in confidential mercy care, benevolence ethics, and clear-conscience gospel doctrine.'
+            },
+            {
+                id: 'pol-8', group: 'PASTORAL', ref: 'Titus 1:5–9 & 1 Peter 5:1–4',
+                title: 'Plurality of Elders, Sound Doctrine & Willing Flock Care',
+                term: 'πρεσβύτερος / ποιμήν (Presbyteros & Poimēn)',
+                course: 'BML-101 • BML-102 • BML-105',
+                bsb: '“Be shepherds of God’s flock that is among you, watching over them not out of compulsion, but because it is God’s will; not out of greed, but out of eagerness; not lording it over those entrusted to you, but being examples to the flock.” (1 Peter 5:2–3, BSB)',
+                quals: ['Plurality of elders in every congregation (Titus 1:5; Acts 14:23)', 'Holding firmly to the trustworthy message to encourage & refute error (Titus 1:9)', 'Threefold 1 Peter 5:2–3 triad: Willing (not forced), Eager (not greedy), Exemplary (not domineering)', 'Accountable to the appearing Chief Shepherd (archipoimēn, 1 Pet 5:4)'],
+                pitfall: 'Unaccountable lone-pastor autocracy or doctrinally passive boards unable to guard the flock from false teaching.',
+                practice: 'Cultivate plurality, mutual elder accountability, confessional fidelity, and joyful modeling.'
+            }
+        ];
+
+        const AUDIT_DIMS = [
+            { id: 'reproach', label: 'Above Reproach & Moral Integrity (1 Tim 3:2)', val: 4 },
+            { id: 'household', label: 'Household Peace & Faithful Stewardship (1 Tim 3:4–5)', val: 4 },
+            { id: 'temperament', label: 'Gentle, Unquarrelsome & Self-Controlled (Titus 1:7–8)', val: 4 },
+            { id: 'doctrine', label: 'Able to Teach & Guard Sound Doctrine (Titus 1:9)', val: 4 },
+            { id: 'hospitality', label: 'Hospitable & Compassionate Toward the Vulnerable (Acts 6)', val: 4 },
+            { id: 'motive', label: 'Willing & Eager Service — Free from Greed/Domination (1 Pet 5:2–3)', val: 4 }
+        ];
+
+        const CORINTH_CASES = [
+            {
+                id: 'cor-1', ref: '1 Corinthians 1:10–4:21',
+                docket: 'Case 1: Celebrity Factions (“I follow Paul / Apollos / Cephas”)',
+                crisis: 'House churches in Corinth are splitting into status cliques around eloquent speakers, boasting in worldly rhetoric (sophia) and despising cross-shaped humility.',
+                options: [
+                    { label: 'A. Let each rhetorical faction form its own branded congregation to maximize growth.', correct: false, why: 'Splits Christ’s body around human personalities (“Has Christ been divided?” 1 Cor 1:13).' },
+                    { label: 'B. Re-center the church on Christ crucified, viewing leaders merely as God’s fellow-servants and stewards.', correct: true, why: 'Exact apostolic ruling! Paul points to the wisdom of the cross (1:18–31) and defines ministers as servants (diakonoi, 3:5) and stewards (oikonomoi, 4:1).' },
+                    { label: 'C. Ban all structured teaching and rely solely on spontaneous impressions.', correct: false, why: 'Paul affirms Apollos’s watering and sound teaching while rebuking carnal partisan pride.' }
+                ],
+                bsb: '“What then is Apollos? And what is Paul? They are servants through whom you believed, as the Lord has assigned to each his role. I planted the seed and Apollos watered it, but God made it grow.” (1 Corinthians 3:5–6, BSB)',
+                canon: 'Pastoral Canon: Leaders are fieldhands and stewards of God’s mysteries—never rival brands.'
+            },
+            {
+                id: 'cor-2', ref: '1 Corinthians 5:1–13 & 2 Corinthians 2:5–11',
+                docket: 'Case 2: Unrepentant Scandal & Redemptive Restoration',
+                crisis: 'A member is openly practicing grave sexual immorality while the congregation boasts in its “tolerance.” Later, when disciplined, he genuinely repents in brokenness.',
+                options: [
+                    { label: 'A. Ignore private morality as long as attendance and giving remain strong.', correct: false, why: '“A little leaven works through the whole batch of dough” (1 Cor 5:6) — unaddressed sin dishonors Christ and harms the soul.' },
+                    { label: 'B. Permanently shun the offender forever, even after tearful repentance.', correct: false, why: 'Violates 2 Cor 2:7–8, risking that the repentant brother be “overwhelmed by excessive sorrow” and Satan outwit the church.' },
+                    { label: 'C. Exercise sorrowful, redemptive church discipline (1 Cor 5) AND swiftly forgive, comfort, and reaffirm love upon genuine repentance (2 Cor 2).', correct: true, why: 'Exact two-part Pauline jurisprudence: firm holiness aimed at salvation (1 Cor 5:5) paired with eager restoration upon repentance (2 Cor 2:6–8).' }
+                ],
+                bsb: '“Now instead, you ought to forgive and comfort him, so that he will not be overwhelmed by excessive sorrow. Therefore I urge you to reaffirm your love for him.” (2 Corinthians 2:7–8, BSB)',
+                canon: 'Pastoral Canon: Church discipline is always surgical and redemptive—never permissive and never vindictive.'
+            },
+            {
+                id: 'cor-3', ref: '1 Corinthians 6:1–11',
+                docket: 'Case 3: Civil Lawsuits Between Believers in Pagan Courts',
+                crisis: 'Two church members are dragging a financial dispute before corrupt Roman magistrates, publicly shaming the gospel witness before unbelievers.',
+                options: [
+                    { label: 'A. Establish wise, impartial ecclesial conciliation among mature believers—and prefer absorbing personal financial loss over disgracing Christ.', correct: true, why: 'Exact apostolic ruling (1 Cor 6:5–7)! Note: criminal abuse is reported to civil authorities (Rom 13:1–4), while ordinary civil/personal disputes call for wise church mediation.' },
+                    { label: 'B. Encourage aggressive litigation so the wealthier member wins public vindication.', correct: false, why: 'Paul calls such brother-against-brother lawsuits “already a complete defeat for you” (1 Cor 6:7).' },
+                    { label: 'C. Refuse to mediate any practical disputes because elders only care about abstract souls.', correct: false, why: 'Paul asks: “If you are to judge the world, are you incompetent to judge trivial cases?” (1 Cor 6:2).' }
+                ],
+                bsb: '“The very fact that you have lawsuits among you means that you are thoroughly defeated already. Why not rather be wronged? Why not rather be cheated?” (1 Corinthians 6:7, BSB)',
+                canon: 'Pastoral Canon: Distinguish civil disputes (ecclesial peacemaking, 1 Cor 6) from crimes (civil sword, Rom 13).'
+            },
+            {
+                id: 'cor-4', ref: '1 Corinthians 7:1–40',
+                docket: 'Case 4: Ascetic Extremism vs. Marriage & Vocational Calling',
+                crisis: 'Some rigorists claim married believers must abstain from marital intimacy to be “truly spiritual,” while others despise singleness as second-class.',
+                options: [
+                    { label: 'A. Mandate celibacy for all church officers and spiritual leaders.', correct: false, why: 'Contradicts 1 Cor 7:2–5 and 1 Tim 4:1–3.' },
+                    { label: 'B. Honor BOTH faithful covenant marriage (mutual affection) AND undivided-devotion singleness as distinct charisma gifts from God.', correct: true, why: 'Exact Pauline balance! Marriage requires mutual conjugal care (7:3–5), and singleness offers undivided devotion to the Lord (7:7, 32–35).' },
+                    { label: 'C. Teach that unmarried believers cannot serve in pastoral or teaching leadership.', correct: false, why: 'Both Jesus and Paul modeled fruitful single ministry (1 Cor 7:7–8, 32).' }
+                ],
+                bsb: '“I wish that all men were as I am. But each man has his own gift from God; one has this gift, another has that.” (1 Corinthians 7:7, BSB)',
+                canon: 'Pastoral Canon: Honor both covenant marriage and kingdom singleness as Spirit-allotted callings.'
+            },
+            {
+                id: 'cor-5', ref: '1 Corinthians 8:1–11:1',
+                docket: 'Case 5: Idol-Meat Liberty vs. Stumbling Weak Consciences',
+                crisis: 'Theologically “knowledgeable” members flaunt their right to dine in pagan temple halls, wounding newly converted believers whose consciences still associate the meat with idolatry.',
+                options: [
+                    { label: 'A. Tell newer believers to toughen up because “knowledge” always outranks sensitivity.', correct: false, why: '“Knowledge puffs up, but love builds up” (1 Cor 8:1)—wounding a weak conscience sins against Christ (8:12).' },
+                    { label: 'B. Voluntarily lay down personal liberty out of agapē love whenever it endangers a brother’s conscience, while fleeing actual idolatrous worship (10:14) — doing all to God’s glory (10:31).', correct: true, why: 'Exact Pauline synthesis across 1 Cor 8–10: gospel freedom willingly yields its rights for the salvation and edification of others (9:19–22; 10:31–33).' },
+                    { label: 'C. Create permanent legalistic food taboos as a condition of justification.', correct: false, why: '“The earth is the Lord’s, and the fullness thereof” (10:26); food does not commend us to God (8:8).' }
+                ],
+                bsb: '“Knowledge puffs up, but love builds up… Therefore, if what I eat causes my brother to stumble, I will never eat meat again, so that I will not cause my brother to fall.” (1 Corinthians 8:1, 13, BSB)',
+                canon: 'Pastoral Canon: Gospel liberty gladly surrenders personal rights whenever love for a weaker sibling requires it.'
+            },
+            {
+                id: 'cor-6', ref: '1 Corinthians 11:17–34',
+                docket: 'Case 6: Socioeconomic Humiliation at the Lord’s Supper',
+                crisis: 'Wealthy patrons feast early in their private dining room while working-class and enslaved believers arrive hungry and humiliated at the Eucharist.',
+                options: [
+                    { label: 'A. Hold separate “VIP Patron” and “Worker” communion services to avoid awkwardness.', correct: false, why: 'Destroys the one-loaf unity of the Body of Christ (1 Cor 10:17; 11:20–22).' },
+                    { label: 'B. Rebuke class division, call every believer to reverent self-examination, proclaim the Lord’s death until He comes, and welcome one another at one shared table.', correct: true, why: 'Exact apostolic ruling (1 Cor 11:23–33): “Discerning the body” includes honoring Christ’s crucified sacrifice AND honoring His poor members as one Body.' },
+                    { label: 'C. Discontinue the Lord’s Supper altogether since it caused controversy.', correct: false, why: 'Christ commanded ongoing remembrance (“Do this in remembrance of Me… until He comes,” 11:24–26).' }
+                ],
+                bsb: '“So then, my brothers, when you come together to eat, wait for one another.” (1 Corinthians 11:33, BSB)',
+                canon: 'Pastoral Canon: Vertical reverence at the Table is inseparable from horizontal unity across class and ethnicity.'
+            },
+            {
+                id: 'cor-7', ref: '1 Corinthians 12:1–14:40',
+                docket: 'Case 7: Charismata Chaos vs. Agapē & Intelligible Edification',
+                crisis: 'Gathered worship has erupted into simultaneous, uninterpreted tongues and competing prophecies while others want to quench all spiritual gifts out of embarrassment.',
+                options: [
+                    { label: 'A. Forbid prophecy and tongues completely so services remain predictable.', correct: false, why: 'Explicitly violates 1 Cor 14:39: “Do not forbid speaking in tongues.”' },
+                    { label: 'B. Encourage louder simultaneous manifestations regardless of whether anyone understands.', correct: false, why: 'Violates 1 Cor 14:23, 27–28, and 33 (“For God is not a God of disorder, but of peace”).' },
+                    { label: 'C. Anchor all gifts in 1 Cor 13 agapē love, prioritize intelligible edification (oikodomē), require interpretation/discernment (2 or 3 in turn), and conduct all things fittingly and in order.', correct: true, why: 'Exact Spirit-filled Pauline order (1 Cor 12:7; 13:1–13; 14:26–40)!' }
+                ],
+                bsb: '“Therefore, my brothers, be eager to prophesy, and do not forbid speaking in tongues. But everything must be done in a proper and orderly manner.” (1 Corinthians 14:39–40, BSB)',
+                canon: 'Pastoral Canon: True Pentecostal/charismatic vitality is governed by agapē love, intelligibility, and peaceful order.'
+            },
+            {
+                id: 'cor-8', ref: '2 Corinthians 4:7–18 & 12:7–10',
+                docket: 'Case 8: “Super-Apostle” Triumphalism vs. Jars-of-Clay Ministry',
+                crisis: 'Boastful “super-apostles” mock Paul’s physical suffering, tears, and lack of flashy patronage letters, claiming true Spirit-anointed leaders never experience weakness.',
+                options: [
+                    { label: 'A. Hide all pastoral struggles and project polished celebrity invincibility.', correct: false, why: 'Paul refuses deceptive polish (“we have renounced secret and shameful ways,” 2 Cor 4:2).' },
+                    { label: 'B. Embrace cruciform “jars of clay” authenticity—carrying Jesus’s death so His resurrection power shines through human weakness (“My grace is sufficient for you”).', correct: true, why: 'Exact climax of 2 Corinthians! Divine power (dynamis) is perfected in human weakness (astheneia, 2 Cor 4:7; 12:9–10).' },
+                    { label: 'C. Charge high speaking fees so the congregation respects pastoral authority.', correct: false, why: 'Paul preached the gospel free of charge in Corinth to distinguish Christ’s grace from peddlers of God’s word (2 Cor 2:17; 11:7–9).' }
+                ],
+                bsb: '“But He said to me, ‘My grace is sufficient for you, for My power is perfected in weakness.’ Therefore I will boast all the more gladly in my weaknesses, so that the power of Christ may rest on me.” (2 Corinthians 12:9, BSB)',
+                canon: 'Pastoral Canon: Treasure in jars of clay—Christ’s surpassing power shines brightest through humble, dependent shepherds.'
+            }
+        ];
+
+        const SOUL_CARE_CASES = [
+            {
+                id: 'care-1', topic: 'Acute Anxiety & Fear', ref: 'Philippians 4:6–9; 1 Peter 5:7',
+                statement: '“Pastor, my chest tightens every night worrying about my job and my kids’ future. Other Christians tell me I’m sinning if I feel anxious, which only makes me panic more.”',
+                heartRoot: 'Functional Orphanhood / Control Burden — trying to carry tomorrow’s sovereignty alone without the Father’s nearness.',
+                bsb: '“Be anxious for nothing, but in everything, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which surpasses all understanding, will guard your hearts and your minds in Christ Jesus.” (Philippians 4:6–7, BSB)',
+                responses: [
+                    { type: 'Moralistic Rebuke', text: '“Stop worrying immediately—anxiety proves you lack real faith. Just read two chapters and try harder.”', correct: false, feedback: 'Crushes a bruised reed with shame without pointing to the compassionate Father (“The Lord is near,” Phil 4:5).' },
+                    { type: 'Secular-Only Technique', text: '“Let’s leave God out of it; just repeat self-affirmations that you are in total control of your universe.”', correct: false, feedback: 'False premise: humans are NOT in sovereign control—our peace rests in casting cares on the One who cares for us (1 Pet 5:7).' },
+                    { type: 'Christ-Centered Soul Care', text: '“You don’t have to hide your fear here. Notice Phil 4:5 starts with ‘The Lord is near.’ Let’s turn each specific fear into thankful petition together, rest in your Father’s care, and check if physical/medical rest is also needed.”', correct: true, feedback: 'Exemplary biblical soul care! Combines gentle presence, God-ward prayer with thanksgiving, truth renewal (Phil 4:8), and whole-person wisdom.' }
+                ],
+                steps: ['List top 3 fears on paper and convert each into a written prayer of petition + 3 concrete mercies of thanksgiving.', 'Memorize 1 Peter 5:7 & Matthew 6:31–34 for nighttime waking.', 'Establish healthy sleep/media boundaries and encourage medical checkup if physiological panic persists.']
+            },
+            {
+                id: 'care-2', topic: 'Acute Grief & Lament', ref: 'Psalm 42; 2 Corinthians 1:3–5; 1 Thess 4:13–14',
+                statement: '“It’s been six weeks since my spouse died. People at church keep smiling and saying ‘At least they’re in heaven—be happy!’ Do Christians have no room to weep?”',
+                heartRoot: 'Disenfranchised Sorrow — needing biblical permission to lament honestly before God while anchored in resurrection hope.',
+                bsb: '“Blessed be the God and Father of our Lord Jesus Christ, the Father of compassion and the God of all comfort, who comforts us in all our troubles…” (2 Corinthians 1:3–4, BSB)',
+                responses: [
+                    { type: 'Triumphalist Cliché', text: '“Dry your tears and praise the Lord! Sadness gives a bad testimony when your spouse is in glory.”', correct: false, feedback: 'Contradicts Jesus Himself, who wept at Lazarus’s tomb (John 11:35), and Paul (“we do grieve, though not as those without hope,” 1 Thess 4:13).' },
+                    { type: 'Secular Fatalism', text: '“Death is just the natural end; time erases everything, so distract yourself.”', correct: false, feedback: 'Denies both the unnaturalness of death as the “last enemy” (1 Cor 15:26) and bodily resurrection hope.' },
+                    { type: 'Christ-Centered Soul Care', text: '“Jesus wept outside Lazarus’s tomb even knowing resurrection was minutes away. In 1 Thess 4:13, Christians grieve WITH hope—not without grief. Let’s walk through a Psalm of Lament together while our deacons surround you with practical meals and presence.”', correct: true, feedback: 'Faithful shepherd care! Honors Rom 12:15 (“weep with those who weep”), validates biblical lament, and anchors in resurrection comfort.' }
+                ],
+                steps: ['Pray Psalm 13 or Psalm 42 aloud together without rushing to quick fixes.', 'Coordinate deacon care team for meals, anniversaries, and practical household logistics.', 'Schedule biweekly grief-care check-ins anchored in 2 Corinthians 1:3–5 and Revelation 21:4.']
+            },
+            {
+                id: 'care-3', topic: 'Deep Bitterness & Forgiveness', ref: 'Ephesians 4:31–32; Matthew 18:21–35; Romans 12:19',
+                statement: '“My business partner—a professing Christian—defrauded my family and walked away. If I forgive him, doesn’t that mean saying what he did was okay and letting him hurt us again?”',
+                heartRoot: 'Confusing Forgiveness with Excusing / Instant Unsafe Trust — carrying the poison of personal vengeance instead of entrusting justice to God.',
+                bsb: '“Be kind and tenderhearted to one another, forgiving each other just as in Christ God forgave you.” (Ephesians 4:32, BSB)',
+                responses: [
+                    { type: 'Cheap Minimization', text: '“Forget it ever happened and hand him your bank passwords again tomorrow to prove you forgave.”', correct: false, feedback: 'Confuses vertical heart forgiveness (releasing personal vengeance) with wisdom, restitution, and rebuilt trust (Luke 3:8; Prov 22:3).' },
+                    { type: 'Vindictive Bitterness', text: '“Hold onto that anger—he doesn’t deserve mercy, so make him pay socially.”', correct: false, feedback: 'Allows a “root of bitterness” (Heb 12:15) to enslave the sufferer and ignores Matt 18:21–35.' },
+                    { type: 'Christ-Centered Soul Care', text: '“Biblical forgiveness never calls evil ‘good’ and doesn’t erase wise boundaries or lawful accountability. It means releasing the debtor from your personal courtroom into God’s righteous hands (Rom 12:19), remembering the 10,000-talent debt Christ canceled for us.”', correct: true, feedback: 'Seminary-grade precision! Distinguishes attitude forgiveness & gospel mercy from enabling sin or bypassing accountability.' }
+                ],
+                steps: ['Distinguish on paper: (1) Naming the real wrong honestly, (2) Handing vengeance to God (Rom 12:19), (3) Wise ongoing financial/relational safeguards.', 'Meditate on Matthew 18:21–35 and Colossians 3:13.', 'Pursue Matthew 18:15–17 / ecclesial accountability if the partner is under church oversight.']
+            },
+            {
+                id: 'care-4', topic: 'Ministry Burnout & Elijah Despair', ref: '1 Kings 19:1–18; Mark 6:31; Galatians 6:9',
+                statement: '“I’ve led three ministries for four years without a Sabbath. Right now I feel numb, exhausted, and convinced nothing I’ve done for God matters.”',
+                heartRoot: 'Messiah-Complex Overwork + Physical Depletion — forgetting creaturely limits (Ps 103:14) and God’s remnant faithfulness.',
+                bsb: '“Come with Me privately to a solitary place, and let us rest for a while.” (Mark 6:31, BSB)',
+                responses: [
+                    { type: 'Guilt-Driven Exploitation', text: '“It’s better to burn out than rust out! Take on one more volunteer slot to get your joy back.”', correct: false, feedback: 'Pharaoh-like bricks-without-straw leadership that ignores YHWH’s own care for Elijah.' },
+                    { type: 'Cynical Abandonment', text: '“Church people are ungrateful—walk away from Christian community altogether.”', correct: false, feedback: 'Isolates the believer just as Elijah isolated himself in the cave (1 Kgs 19:9–10).' },
+                    { type: 'Christ-Centered Soul Care', text: '“Look at how gently God met exhausted Elijah in 1 Kings 19: first sleep, warm bread, and water—then a gentle whisper reminding him he wasn’t carrying the kingdom alone (7,000 remnant) and giving him Elisha. Let’s step you into a guilt-free Sabbath rest season right now.”', correct: true, feedback: 'Models YHWH’s holistic care in 1 Kings 19: physical restoration, Gentle Whisper encounter, corrected perspective, and shared team.' }
+                ],
+                steps: ['Grant immediate 6–8 week ministry sabbatical from operational duties with full congregational honor.', 'Restore weekly 24-hour Sabbath rhythm, sleep, nutrition, and unhurried communion with Christ (Mark 6:31).', 'Re-enter only 1 focused calling with an apprentice co-leader (2 Tim 2:2).']
+            },
+            {
+                id: 'care-5', topic: 'Worldly vs. Godly Sorrow', ref: '2 Corinthians 7:9–11; Psalm 51; 1 John 1:9',
+                statement: '“I got caught hiding financial deceit from my spouse. I hate how embarrassed I feel and just want everyone to stop bringing it up so we can move on.”',
+                heartRoot: 'Worldly Sorrow (lupē tou kosmou) — mourning damaged reputation and consequences rather than grieving the offense against God and neighbor.',
+                bsb: '“Godly sorrow brings repentance that leads to salvation without regret, whereas worldly sorrow brings death.” (2 Corinthians 7:10, BSB)',
+                responses: [
+                    { type: 'Premature Cover-Up', text: '“Since you apologized once, your spouse has no right to ask financial questions anymore.”', correct: false, feedback: 'Short-circuits genuine repentance fruits (earnestness, transparency, restitution — 2 Cor 7:11).' },
+                    { type: 'Hopeless Condemnation', text: '“Once a deceiver, always a deceiver—there is no cleansing for someone like you.”', correct: false, feedback: 'Denies the cleansing blood of Jesus (1 John 1:7–9).' },
+                    { type: 'Christ-Centered Soul Care', text: '“In 2 Cor 7:10–11, Paul contrasts worldly sorrow (hating getting caught) with godly sorrow (grieving sin against God, welcoming full light and accountability). Because Christ’s grace fully cleanses confessed sin (1 John 1:9), you are safe to walk in 100% financial transparency while trust is patiently rebuilt.”', correct: true, feedback: 'Biblically incisive and full of gospel hope—pairs Psalm 51 contrition and 1 John 1:9 cleansing with 2 Cor 7:11 fruits of repentance.' }
+                ],
+                steps: ['Pray Psalm 51 personally, shifting focus from self-pity to God-ward contrition and gospel cleansing.', 'Establish open-book joint financial visibility and budget accountability with a mature mentor couple.', 'Practice patient, non-defensive truthfulness as trust is rebuilt over time (2 Cor 7:11).']
+            },
+            {
+                id: 'care-6', topic: 'Marital Conflict & Speech', ref: 'Ephesians 4:25–32; James 1:19–20; James 4:1–2',
+                statement: '“Every minor disagreement in our marriage escalates within two minutes into interrupting, bringing up five-year-old failures, and days of icy silence.”',
+                heartRoot: 'Demanding Heart Desires (Jas 4:1–2) + Unbridled Tongue / Clamming-Up Cycle instead of grace-giving speech.',
+                bsb: '“My beloved brothers, understand this: Everyone should be quick to listen, slow to speak, and slow to anger…” (James 1:19, BSB)',
+                responses: [
+                    { type: 'One-Sided Blame', text: '“Clearly one of you is 100% the villain; figure out who started it and make them grovel.”', correct: false, feedback: 'Ignores mutual log-removal (Matt 7:3–5) and heart desires (Jas 4:1).' },
+                    { type: 'Venting Escalation', text: '“Never hold back—scream every raw thought in your head so it’s ‘authentic.’”', correct: false, feedback: 'Proverbs 29:11: “A fool vents all his anger, but a wise man holds it back.”' },
+                    { type: 'Christ-Centered Soul Care', text: '“James 4:1 asks what desires are warring inside our hearts when we fight, and Eph 4:26–29 gives us four concrete rules: be honest, attack the problem (not the person), keep current (don’t let the sun go down on anger), and speak only words that impart grace.”', correct: true, feedback: 'Classic Eph 4:25–32 + Jas 1:19 marriage framework: heart examination + transformative communication habits.' }
+                ],
+                steps: ['Adopt the James 1:19 Speaker-Listener pause: summarize your spouse’s heart accurately before replying.', 'Replace historical scorekeeping (1 Cor 13:5) with daily Eph 4:26 sunset confession and forgiveness.', 'Pray aloud together for 3 minutes each evening—hand in hand—before discussing logistics.']
+            },
+            {
+                id: 'care-7', topic: 'Habitual Besetting Sin', ref: '1 Corinthians 10:13; Galatians 6:1–2; Titus 2:11–12',
+                statement: '“I’ve promised God fifty times in private that I’ll quit this secret habit, and I keep failing every Friday night. I’m terrified to tell anyone.”',
+                heartRoot: 'White-Knuckle Secrecy — relying on isolated willpower instead of gospel grace (Titus 2:11–12), confessing in light (Jas 5:16), and seizing the Way of Escape (1 Cor 10:13).',
+                bsb: '“God is faithful; He will not let you be tempted beyond what you can bear. But when you are tempted, He will also provide an escape, so that you can stand up under it.” (1 Corinthians 10:13, BSB)',
+                responses: [
+                    { type: 'Isolated Willpower', text: '“Make one more solemn vow in secret and double your self-punishment if you slip.”', correct: false, feedback: 'Colossians 2:23 warns that severe self-made regulations have “no value in restraining sensual indulgence.”' },
+                    { type: 'Antinomian Shrug', text: '“Grace covers everything, so stop fighting temptation altogether.”', correct: false, feedback: 'Violates Rom 6:1–2 and Titus 2:11–12 (saving grace trains us to renounce ungodliness).' },
+                    { type: 'Christ-Centered Soul Care', text: '“Bringing this into the light today just broke secrecy’s stranglehold (Jas 5:16)! You are fighting FROM union with Christ (Rom 6), not for it. Let’s map your Friday triggers, pre-build your 1 Cor 10:13 ‘way of escape,’ and pair you with a gentle Gal 6:1–2 accountability brother/sister.”', correct: true, feedback: 'Combines justification security, Titus 2 grace-training, James 5:16 confession in community, and practical 1 Cor 10:13 escape architecture.' }
+                ],
+                steps: ['Map the H.A.L.T. triggers (Hungry, Angry, Lonely, Tired) preceding Friday-night temptation.', 'Pre-commit the concrete 1 Cor 10:13 Way of Escape (device filters, environment change, immediate phone call).', 'Weekly Galatians 6:1–2 gentle, grace-saturated accountability check-in + Scripture meditation (Rom 6:11–14; Ps 119:9–11).']
+            },
+            {
+                id: 'care-8', topic: 'Vocational Discernment & Calling', ref: 'Proverbs 3:5–6; James 1:5; Colossians 3:23–24',
+                statement: '“I have two ethical job offers—one higher-paying in another city without a healthy church nearby, and one modest role here where my family is thriving in ministry. I’m waiting for a Fleece sign.”',
+                heartRoot: 'Superstitious Sign-Seeking vs. Wisdom Stewardship — needing biblical priorities (kingdom & local church health first, Matt 6:33) for non-moral decisions.',
+                bsb: '“Trust in the LORD with all your heart, and lean not on your own understanding; in all your ways acknowledge Him, and He will make your paths straight.” (Proverbs 3:5–6, BSB)',
+                responses: [
+                    { type: 'Mystical Paralysis', text: '“Flip your Bible open at random with your eyes closed until a verse names the city.”', correct: false, feedback: 'Treats Scripture as divination rather than God-breathed wisdom (2 Tim 3:16–17).' },
+                    { type: 'Materialistic Default', text: '“Always take the highest salary—spiritual community will sort itself out eventually.”', correct: false, feedback: 'Lot pitched his tents toward Sodom solely for lush pasture (Gen 13:10–13) at devastating cost to his family.' },
+                    { type: 'Christ-Centered Soul Care', text: '“When two options are both morally lawful, God guides through sanctified wisdom: Scripture’s kingdom priorities (Matt 6:33; Heb 10:24–25), prayerful counsel from godly elders (Prov 15:22), family flourishing, and stewardship. Never trade a thriving local church and family soul-health without a clear gospel church ready in the new city!”', correct: true, feedback: 'Sound biblical wisdom theology! Integrates Prov 3:5–6, Prov 15:22 multitude of counselors, and Matt 6:33 ecclesial priority.' }
+                ],
+                steps: ['Evaluate both options across a 5-Part Biblical Wisdom Grid: (1) Moral lawfulness, (2) Local church & family discipleship health, (3) Vocational gifting, (4) Generosity/stewardship, (5) Multitude of godly counselors (Prov 15:22).', 'Verify a doctrinally sound local congregation BEFORE ever relocating a household.', 'Ask God in faith for wisdom (Jas 1:5) and step forward in Col 3:23–24 peace.']
+            }
+        ];
+
+        const QUIZ_QUESTIONS = [
+            { q: "In Exodus 18:17–23, why did Jethro warn Moses that judging every dispute alone was 'not good'?", choices: ["Moses lacked legal knowledge of Sinai's covenant", "Solo bottlenecking would wear out both Moses and the people instead of multiplying God-fearing leaders", "Israel no longer needed moral laws", "Only Levites were permitted to hear minor disputes"], answer: 1, rationale: "Exodus 18:18–21 teaches shared stewardship: delegating routine cases to God-fearing, trustworthy, incorruptible leaders while reserving major doctrinal matters." },
+            { q: "According to Acts 6:1–7, why did the Twelve call the church to select seven men full of the Spirit and wisdom?", choices: ["Because caring for widows was beneath spiritual people", "So widows would receive equitable mercy care while apostles remained devoted to prayer and the ministry of the word", "To replace the twelve apostles permanently", "To collect temple taxes for Rome"], answer: 1, rationale: "Acts 6:2–4 models Spirit-empowered synergy between Word-and-prayer oversight and Spirit-filled diaconate mercy ministry, resulting in church multiplication (6:7)." },
+            { q: "In Mark 10:42–45, how does Jesus contrast kingdom leadership with Gentile rulers?", choices: ["Kingdom leaders use stricter titles of rank", "Greatness in Christ's kingdom is downward servant ministry (diakonos/doulos), modeled on the Son of Man giving His life as a ransom", "Christian churches should abolish all pastoral offices", "Leaders must never correct doctrinal error"], answer: 1, rationale: "Mark 10:43–45 anchors Christian leadership in Christ's cruciform service and ransom sacrifice rather than authoritarian 'lording over.'" },
+            { q: "Why does 1 Timothy 3:4–5 require an overseer (episkopos) to manage his own household well?", choices: ["Because only wealthy landowners may serve", "For if someone does not know how to manage his own household, how can he care for God's church?", "To guarantee dynastic succession of his children as pastors", "Because unmarried believers can never serve Christ"], answer: 1, rationale: "Paul identifies the home as the primary proving ground of gentle, faithful pastoral care for God's household (1 Tim 3:5)." },
+            { q: "Which qualification distinguishes an overseer (1 Tim 3:2; Titus 1:9) alongside shared character virtues with deacons?", choices: ["Holding a clear conscience", "Being able to teach sound doctrine and refute those who contradict it", "Being tested in trustworthiness", "Being free from love of dishonest gain"], answer: 1, rationale: "While virtually all moral character traits overlap, 'able to teach' (didaktikos, 1 Tim 3:2) and guarding sound doctrine (Titus 1:9) specifically mark the elder/overseer office." },
+            { q: "What three contrasts does Peter give elders in 1 Peter 5:2–3?", choices: ["Fast vs. slow, loud vs. quiet, formal vs. informal", "Not under compulsion but willingly; not for shameful gain but eagerly; not domineering but being examples to the flock", "Old Testament vs. New Testament, Greek vs. Hebrew, rural vs. urban", "Preaching vs. counseling, administration vs. missions, youth vs. seniors"], answer: 1, rationale: "1 Peter 5:2–3 defines the shepherd's heart posture under the Chief Shepherd (archipoimēn): willing, eager, and exemplary." },
+            { q: "How does Paul resolve celebrity leadership factions in 1 Corinthians 3:5–7?", choices: ["By declaring Apollos a false teacher", "By defining ministers as servants (diakonoi) who plant and water while God alone gives the growth", "By holding a congregational popularity vote", "By forbidding eloquent preaching"], answer: 1, rationale: "1 Corinthians 3:5–7 dismantles personality cults by attributing all spiritual life and growth to God." },
+            { q: "Comparing 1 Corinthians 5 and 2 Corinthians 2:5–11, what is the biblical goal of church discipline?", choices: ["Permanent public humiliation", "Redemptive holiness aimed at the sinner's restoration, followed by eager forgiveness, comfort, and reaffirmed love upon genuine repentance", "Protecting church tax status", "Ignoring public scandal in the name of grace"], answer: 1, rationale: "1 Cor 5 guards Christ's holiness and seeks salvation, while 2 Cor 2:6–8 commands swift forgiveness and comfort once repentance occurs." },
+            { q: "In 1 Corinthians 8–10, what principle governs a mature believer's use of Christian liberty around weaker consciences?", choices: ["Knowledge puffs up, so flaunt every right publicly", "Love (agapē) willingly lays down personal rights so as never to stumble a brother or sister for whom Christ died", "Weak consciences should dictate new conditions for justification", "Avoid eating with other Christians entirely"], answer: 1, rationale: "1 Corinthians 8:1, 9, 13 and 10:31–33 subordinate personal rights to edifying love and the glory of God." },
+            { q: "In 1 Corinthians 12–14, how does Paul regulate spiritual gifts (charismata) in public worship?", choices: ["He forbids tongues and prophecy altogether", "He anchors all gifts in 1 Cor 13 love, prioritizes intelligible edification (oikodomē), and requires proper, peaceful order", "He restricts all gifts exclusively to ordained bishops", "He encourages simultaneous, uninterpreted speech"], answer: 1, rationale: "1 Cor 14:26–40 pairs eager openness to the Spirit's gifts with love, intelligibility, interpretation, and peaceful order." },
+            { q: "What is the central pastoral theology of 2 Corinthians 4:7 and 12:9 ('jars of clay' / 'thorn in the flesh')?", choices: ["Spirit-filled leaders never experience illness, grief, or weakness", "God's surpassing power is perfected and displayed through humble human weakness", "Pastors should boast in their rhetorical credentials", "Suffering always indicates unconfessed sin"], answer: 1, rationale: "In 2 Cor 4:7 and 12:9, Christ's resurrection power rests most visibly upon humble, dependent servants rather than boastful 'super-apostles.'" },
+            { q: "According to 2 Corinthians 7:10, what distinguishes godly sorrow from worldly sorrow?", choices: ["Emotional volume and tears", "Godly sorrow grieves sin against God and produces earnest, transparent repentance unto life, whereas worldly sorrow merely resents consequences and brings death", "Worldly sorrow confesses too quickly", "There is no practical difference"], answer: 1, rationale: "2 Cor 7:10–11 provides the classic soul-care diagnostic distinguishing self-focused regret from God-ward repentance." },
+            { q: "In biblical soul care for acute grief (1 Thess 4:13; John 11:35; Rom 12:15), how should a shepherd respond?", choices: ["Rebuke tears as unbelief since deceased believers are in heaven", "Weep with those who weep, welcome honest biblical lament, and anchor sorrow in bodily resurrection hope", "Offer secular clichés that time heals everything", "Avoid visiting until the mourner feels cheerful"], answer: 1, rationale: "Christians grieve WITH hope (1 Thess 4:13)—never shaming tears that Jesus Himself shed (John 11:35)." },
+            { q: "What vital distinction must pastoral counselors maintain when teaching Ephesians 4:32 and Romans 12:19 on forgiveness?", choices: ["Forgiveness means pretending abuse never happened and removing all safety boundaries", "Heart forgiveness releases personal vengeance to God's justice without excusing evil or bypassing wise safety, restitution, or civil law (Rom 13)", " Christians should only forgive after receiving financial payment", "Forgiveness is optional for severe offenses"], answer: 1, rationale: "Biblical forgiveness cancels personal vengeance before God while upholding truth, safety, and appropriate ecclesial/civil accountability." },
+            { q: "How did YHWH care for burned-out Elijah in 1 Kings 19:5–18?", choices: ["Immediate termination from prophetic ministry", "Physical rest and nourishment first, a gentle whisper encounter, truth correcting his isolation ('7,000 remnant'), and shared partnership with Elisha", "Demanding double output without sleep", "Sending him back alone without encouragement"], answer: 1, rationale: "1 Kings 19 models holistic soul care: bodily rest, gentle communion with God, renewed theological perspective, and shared ministry team." }
+        ];
+
+        const State = {
+            lang: 'en',
+            activeTab: 'polity',
+            polityFilter: 'ALL',
+            selectedPolity: 'pol-1',
+            selectedCorinth: 'cor-1',
+            corChoices: {},
+            selectedCare: 'care-1',
+            careChoices: {},
+            careNotes: {},
+            mastered: new Set(),
+            quizAnswers: {},
+            quizBestPct: 0,
+            auditVals: { reproach: 4, household: 4, temperament: 4, doctrine: 4, hospitality: 4, motive: 4 }
+        };
+
+        function loadSavedState() {
+            try {
+                const raw = localStorage.getItem('bda_studio_state_' + APP_SLUG);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed.mastered)) State.mastered = new Set(parsed.mastered);
+                    if (typeof parsed.quizBestPct === 'number') State.quizBestPct = parsed.quizBestPct;
+                    if (parsed.corChoices) State.corChoices = parsed.corChoices;
+                    if (parsed.careChoices) State.careChoices = parsed.careChoices;
+                    if (parsed.careNotes) State.careNotes = parsed.careNotes;
+                    if (parsed.auditVals) Object.assign(State.auditVals, parsed.auditVals);
+                }
+            } catch (e) {}
+        }
+
+        function saveStateAndSync() {
+            const masteredArr = Array.from(State.mastered);
+            try {
+                localStorage.setItem('bda_studio_state_' + APP_SLUG, JSON.stringify({
+                    mastered: masteredArr,
+                    quizBestPct: State.quizBestPct,
+                    corChoices: State.corChoices,
+                    careChoices: State.careChoices,
+                    careNotes: State.careNotes,
+                    auditVals: State.auditVals
+                }));
+            } catch (e) {}
+
+            const mCount = masteredArr.length;
+            const pCount = POLITY_MODELS.filter(x => State.mastered.has(x.id)).length;
+            const cCount = CORINTH_CASES.filter(x => State.mastered.has(x.id)).length;
+            const sCount = SOUL_CARE_CASES.filter(x => State.mastered.has(x.id)).length;
+
+            const heroM = document.getElementById('hero-mastery-val');
+            if (heroM) heroM.textContent = mCount + ' / ' + TOTAL_ITEMS;
+            const heroQ = document.getElementById('hero-quiz-val');
+            if (heroQ) heroQ.textContent = State.quizBestPct + '%';
+            const embM = document.getElementById('embed-mastery-pill');
+            if (embM) embM.textContent = '✓ ' + mCount + ' / ' + TOTAL_ITEMS + ' Mastered';
+
+            const bp = document.getElementById('badge-polity');
+            if (bp) bp.textContent = pCount + '/8';
+            const bc = document.getElementById('badge-corinthians');
+            if (bc) bc.textContent = cCount + '/8';
+            const bs = document.getElementById('badge-counseling');
+            if (bs) bs.textContent = sCount + '/8';
+            const bq = document.getElementById('badge-quiz');
+            if (bq) bq.textContent = State.quizBestPct + '%';
+
+            if (typeof window.bdaReportProgress === 'function') {
+                window.bdaReportProgress(APP_SLUG, mCount, TOTAL_ITEMS, State.quizBestPct);
+            }
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const el = document.getElementById('bda-toast');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.add('visible');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('visible'), 2600);
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function switchTab(tabKey, pushHistory = true) {
+            const valid = ['polity', 'corinthians', 'counseling', 'quiz'];
+            if (!valid.includes(tabKey)) tabKey = 'polity';
+            State.activeTab = tabKey;
+            valid.forEach(k => {
+                const btn = document.getElementById('tab-btn-' + k);
+                const panel = document.getElementById('panel-' + k);
+                if (btn) btn.classList.toggle('active', k === tabKey);
+                if (panel) panel.classList.toggle('active', k === tabKey);
+            });
+            if (pushHistory) {
+                try {
+                    const u = new URL(window.location.href);
+                    u.searchParams.set('tab', tabKey);
+                    history.replaceState(null, '', u.toString());
+                } catch (e) {}
+            }
+        }
+
+        function filterPolity(group, btnEl) {
+            State.polityFilter = group;
+            document.querySelectorAll('#polity-filter-bar .bda-pill').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            const visible = POLITY_MODELS.filter(m => group === 'ALL' || m.group === group);
+            if (visible.length && !visible.some(m => m.id === State.selectedPolity)) {
+                State.selectedPolity = visible[0].id;
+            }
+            renderPolity();
+        }
+
+        function selectPolity(id) {
+            State.selectedPolity = id;
+            const wasNew = !State.mastered.has(id);
+            State.mastered.add(id);
+            renderPolity();
+            saveStateAndSync();
+            if (wasNew) showToast('✓ Polity archetype recorded in Study Passport!');
+        }
+
+        function renderPolity() {
+            const grid = document.getElementById('polity-grid');
+            const detail = document.getElementById('polity-detail');
+            if (!grid || !detail) return;
+            const items = POLITY_MODELS.filter(m => State.polityFilter === 'ALL' || m.group === State.polityFilter);
+
+            grid.innerHTML = items.map(m => {
+                const active = m.id === State.selectedPolity;
+                const done = State.mastered.has(m.id);
+                return `<button type="button" onclick="selectPolity('${m.id}')" class="choice-card-btn ${active ? 'ring-2' : ''}" style="border-color:${active ? 'var(--bda-accent)' : 'var(--bda-border)'}; background:${active ? 'var(--bda-surface-muted)' : 'var(--bda-surface)'};">
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                        <span class="text-xs font-bold" style="color:var(--bda-accent);">${escapeHtml(m.ref)}</span>
+                        <span class="text-xs font-bold" style="color:${done ? 'var(--zone-gospel)' : 'var(--bda-text-muted)'};">${done ? '✓ Studied' : m.group}</span>
+                    </div>
+                    <div class="font-bold text-sm">${escapeHtml(m.title)}</div>
+                    <div class="text-xs mt-1" style="color:var(--bda-text-muted); unicode-bidi:isolate;">${escapeHtml(m.term)}</div>
+                </button>`;
+            }).join('');
+
+            const cur = POLITY_MODELS.find(m => m.id === State.selectedPolity) || POLITY_MODELS[0];
+            const isMastered = State.mastered.has(cur.id);
+            detail.innerHTML = `
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span class="bda-pill active" style="cursor:default;">${escapeHtml(cur.ref)}</span>
+                            <span class="bda-pill" style="cursor:default; unicode-bidi:isolate;">${escapeHtml(cur.term)}</span>
+                            <span class="bda-pill" style="cursor:default;">${escapeHtml(cur.course)}</span>
+                        </div>
+                        <h3 class="text-xl font-bold font-serif-title">${escapeHtml(cur.title)}</h3>
+                    </div>
+                    <button type="button" onclick="toggleItemMastery('${cur.id}')" class="bda-pill ${isMastered ? 'mastered' : ''}">
+                        ${isMastered ? '✓ Mastered in Passport' : '+ Mark Archetype Mastered'}
+                    </button>
+                </div>
+                <blockquote class="bda-callout font-scripture italic text-base mb-4">${escapeHtml(cur.bsb)}</blockquote>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bda-card p-4">
+                        <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color:var(--zone-gospel);">Biblical Qualifications &amp; Pillars</div>
+                        <ul class="space-y-1.5 text-sm">
+                            ${cur.quals.map(q => `<li class="flex items-start gap-2"><span style="color:var(--zone-gospel);">✓</span><span>${escapeHtml(q)}</span></li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bda-callout-warn text-sm">
+                            <div class="text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--zone-warn);">Pastoral Pitfall / Counterfeit</div>
+                            <div>${escapeHtml(cur.pitfall)}</div>
+                        </div>
+                        <div class="bda-callout-gospel text-sm">
+                            <div class="text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--zone-gospel);">Contemporary Ecclesial Implementation</div>
+                            <div>${escapeHtml(cur.practice)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleItemMastery(id) {
+            if (State.mastered.has(id)) {
+                State.mastered.delete(id);
+            } else {
+                State.mastered.add(id);
+                showToast('✓ Added to your BDA Study Passport!');
+            }
+            renderPolity();
+            saveStateAndSync();
+        }
+
+        function renderAudit() {
+            const box = document.getElementById('audit-sliders');
+            const pill = document.getElementById('audit-score-pill');
+            const fb = document.getElementById('audit-feedback');
+            if (!box || !pill || !fb) return;
+
+            box.innerHTML = AUDIT_DIMS.map(d => {
+                const v = State.auditVals[d.id] || 4;
+                return `<div class="bda-card-muted p-3.5">
+                    <div class="flex items-center justify-between gap-2 text-xs sm:text-sm font-semibold mb-1.5">
+                        <label for="slider-${d.id}">${escapeHtml(d.label)}</label>
+                        <span class="bda-pill" style="cursor:default; padding:1px 8px;">${v} / 5</span>
+                    </div>
+                    <input id="slider-${d.id}" type="range" min="1" max="5" step="1" value="${v}" oninput="updateAuditDim('${d.id}', this.value)" style="accent-color:var(--bda-accent); width:100%; cursor:pointer;">
+                </div>`;
+            }).join('');
+
+            updateAuditSummary();
+        }
+
+        function updateAuditDim(id, val) {
+            State.auditVals[id] = Number(val) || 3;
+            renderAudit();
+            saveStateAndSync();
+        }
+
+        function updateAuditSummary() {
+            const pill = document.getElementById('audit-score-pill');
+            const fb = document.getElementById('audit-feedback');
+            if (!pill || !fb) return;
+            const vals = AUDIT_DIMS.map(d => ({ ...d, v: State.auditVals[d.id] || 4 }));
+            const total = vals.reduce((acc, x) => acc + x.v, 0);
+            const pct = Math.round((total / 30) * 100);
+            const lowest = vals.slice().sort((a, b) => a.v - b.v)[0];
+            pill.textContent = `Readiness: ${total} / 30 (${pct}%)`;
+            if (total >= 25) {
+                fb.innerHTML = `<strong>Mature Shepherd Readiness (${pct}%):</strong> Strong holistic alignment across 1 Timothy 3 and 1 Peter 5. Continue guarding mutual elder accountability and prioritize ongoing growth in <em>${escapeHtml(lowest.label)}</em>.`;
+            } else if (total >= 18) {
+                fb.innerHTML = `<strong>Developing Tested Steward (${pct}%):</strong> Solid foundation! Following 1 Timothy 3:10 (“let them first be tested”), focus intentional mentoring and prayer this semester on <em>${escapeHtml(lowest.label)}</em> (${lowest.v}/5).`;
+            } else {
+                fb.innerHTML = `<strong>Formational Season Prior to Office (${pct}%):</strong> 1 Timothy 3:6 &amp; 5:22 counsel unhurried character formation before formal ordination. Begin with faithful discipleship and mentoring around <em>${escapeHtml(lowest.label)}</em> (${lowest.v}/5).`;
+            }
+        }
+
+        function selectCorinth(id) {
+            State.selectedCorinth = id;
+            renderCorinthians();
+        }
+
+        function chooseCorinthOption(caseId, idx) {
+            State.corChoices[caseId] = idx;
+            const c = CORINTH_CASES.find(x => x.id === caseId);
+            if (c && c.options[idx] && c.options[idx].correct) {
+                const wasNew = !State.mastered.has(caseId);
+                State.mastered.add(caseId);
+                if (wasNew) showToast('✓ Apostolic Verdict unlocked & saved to Passport!');
+            }
+            renderCorinthians();
+            saveStateAndSync();
+        }
+
+        function renderCorinthians() {
+            const sel = document.getElementById('cor-selector');
+            const ws = document.getElementById('cor-workspace');
+            if (!sel || !ws) return;
+
+            sel.innerHTML = CORINTH_CASES.map((c, i) => {
+                const active = c.id === State.selectedCorinth;
+                const done = State.mastered.has(c.id);
+                return `<button type="button" onclick="selectCorinth('${c.id}')" class="choice-card-btn" style="padding:0.6rem 0.8rem; border-color:${active ? 'var(--bda-accent)' : 'var(--bda-border)'}; background:${active ? 'var(--bda-surface-muted)' : 'var(--bda-surface)'};">
+                    <div class="flex items-center justify-between text-xs font-bold mb-0.5">
+                        <span style="color:var(--bda-accent);">Docket #${i + 1}</span>
+                        <span style="color:${done ? 'var(--zone-gospel)' : 'var(--bda-text-muted)'};">${done ? '✓ Ruled' : c.ref.split('&')[0].trim()}</span>
+                    </div>
+                    <div class="text-xs font-semibold line-clamp-2">${escapeHtml(c.docket.replace(/^Case \d+:\s*/, ''))}</div>
+                </button>`;
+            }).join('');
+
+            const cur = CORINTH_CASES.find(c => c.id === State.selectedCorinth) || CORINTH_CASES[0];
+            const picked = State.corChoices[cur.id];
+            const pickedOpt = typeof picked === 'number' ? cur.options[picked] : null;
+
+            ws.innerHTML = `
+                <div class="bda-card-muted p-5 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <span class="bda-pill active" style="cursor:default;">${escapeHtml(cur.ref)}</span>
+                        <span class="text-xs font-semibold" style="color:var(--bda-text-muted);">BML-103 • Corinthian Pastoral Docket</span>
+                    </div>
+                    <h3 class="text-xl font-bold font-serif-title mb-2">${escapeHtml(cur.docket)}</h3>
+                    <div class="bda-callout-warn text-sm mb-4">
+                        <strong>Congregational Crisis in Corinth:</strong> ${escapeHtml(cur.crisis)}
+                    </div>
+                    <div class="text-xs font-bold uppercase tracking-wider mb-2.5" style="color:var(--bda-accent);">How Would You Rule as Pastor-Elder?</div>
+                    <div class="space-y-2.5 mb-4">
+                        ${cur.options.map((o, idx) => {
+                            let cls = '';
+                            if (picked === idx) cls = o.correct ? 'selected-correct' : 'selected-wrong';
+                            return `<button type="button" onclick="chooseCorinthOption('${cur.id}', ${idx})" class="choice-card-btn ${cls}">
+                                <div class="font-semibold">${escapeHtml(o.label)}</div>
+                                ${picked === idx ? `<div class="text-xs mt-1.5" style="color:${o.correct ? 'var(--zone-gospel)' : 'var(--zone-warn)'};"><strong>${o.correct ? '✓ Apostolic Alignment:' : '⚠ Re-examine:'}</strong> ${escapeHtml(o.why)}</div>` : ''}
+                            </button>`;
+                        }).join('')}
+                    </div>
+                    ${pickedOpt ? `
+                        <div class="bda-callout-gospel space-y-2 mt-4">
+                            <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--zone-gospel);">Paul's Apostolic Verdict &amp; Berean Standard Bible Anchor</div>
+                            <blockquote class="font-scripture italic text-base">${escapeHtml(cur.bsb)}</blockquote>
+                            <div class="text-sm font-semibold">${escapeHtml(cur.canon)}</div>
+                        </div>
+                    ` : `<div class="text-xs italic" style="color:var(--bda-text-muted);">Select one of the three pastoral rulings above to reveal Paul's apostolic verdict and BSB anchor text.</div>`}
+                </div>
+            `;
+        }
+
+        function selectCare(id) {
+            State.selectedCare = id;
+            renderCounseling();
+        }
+
+        function chooseCareOption(caseId, idx) {
+            State.careChoices[caseId] = idx;
+            const c = SOUL_CARE_CASES.find(x => x.id === caseId);
+            if (c && c.responses[idx] && c.responses[idx].correct) {
+                const wasNew = !State.mastered.has(caseId);
+                State.mastered.add(caseId);
+                if (wasNew) showToast('✓ Biblical Soul Care Case mastered!');
+            }
+            renderCounseling();
+            saveStateAndSync();
+        }
+
+        function saveCareNote(caseId, val) {
+            State.careNotes[caseId] = val;
+            saveStateAndSync();
+        }
+
+        function exportCarePlanMd(caseId) {
+            const c = SOUL_CARE_CASES.find(x => x.id === caseId) || SOUL_CARE_CASES[0];
+            const bestResp = c.responses.find(r => r.correct);
+            const note = (State.careNotes[c.id] || '').trim() || 'Praying through this Scripture prescription and following up next week.';
+            const md = [
+                `# Biblical Soul Care & Pastoral Action Plan — ${c.topic}`,
+                `- **Academy Studio:** Ecclesia & Shepherd Studio (Certificate 3: BML 101–105)`,
+                `- **Primary Scripture Anchor:** ${c.ref}`,
+                `- **Date Generated:** ${new Date().toISOString().slice(0, 10)}`,
+                ``,
+                `## 1. Counselee Intake Summary`,
+                `> ${c.statement}`,
+                ``,
+                `## 2. Biblical Heart & Root Diagnostic`,
+                `${c.heartRoot}`,
+                ``,
+                `## 3. Berean Standard Bible (BSB) Care Anchor`,
+                `> ${c.bsb}`,
+                ``,
+                `## 4. Christ-Centered Pastoral Counsel`,
+                `${bestResp ? bestResp.text : ''}`,
+                ``,
+                `## 5. Concrete Discipleship & Care Steps`,
+                ...c.steps.map((s, i) => `${i + 1}. ${s}`),
+                ``,
+                `## 6. Shepherd's Personal Prayer & Follow-Up Notes`,
+                `${note}`,
+                ``
+            ].join('\n');
+
+            const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `BDA-Soul-Care-Plan-${c.id}.md`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast('✓ Downloaded Markdown Soul Care Plan (.md)!');
+        }
+
+        function renderCounseling() {
+            const sel = document.getElementById('care-selector');
+            const ws = document.getElementById('care-workspace');
+            if (!sel || !ws) return;
+
+            sel.innerHTML = SOUL_CARE_CASES.map((c, i) => {
+                const active = c.id === State.selectedCare;
+                const done = State.mastered.has(c.id);
+                return `<button type="button" onclick="selectCare('${c.id}')" class="choice-card-btn" style="padding:0.6rem 0.8rem; border-color:${active ? 'var(--bda-accent)' : 'var(--bda-border)'}; background:${active ? 'var(--bda-surface-muted)' : 'var(--bda-surface)'};">
+                    <div class="flex items-center justify-between text-xs font-bold mb-0.5">
+                        <span style="color:var(--bda-accent);">Case #${i + 1}</span>
+                        <span style="color:${done ? 'var(--zone-gospel)' : 'var(--bda-text-muted)'};">${done ? '✓ Mastered' : 'Soul Care'}</span>
+                    </div>
+                    <div class="text-xs font-semibold line-clamp-1">${escapeHtml(c.topic)}</div>
+                </button>`;
+            }).join('');
+
+            const cur = SOUL_CARE_CASES.find(c => c.id === State.selectedCare) || SOUL_CARE_CASES[0];
+            const picked = State.careChoices[cur.id];
+            const noteVal = State.careNotes[cur.id] || '';
+
+            ws.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <div class="lg:col-span-7 bda-card-muted p-5 space-y-4">
+                        <div>
+                            <span class="bda-pill active" style="cursor:default;">${escapeHtml(cur.ref)}</span>
+                            <h3 class="text-xl font-bold font-serif-title mt-2">${escapeHtml(cur.topic)}</h3>
+                        </div>
+                        <div class="bda-callout">
+                            <div class="text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--bda-accent);">Counselee Statement</div>
+                            <p class="font-scripture italic text-base">${escapeHtml(cur.statement)}</p>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color:var(--bda-accent);">Choose Your Pastoral Response</div>
+                            <div class="space-y-2.5">
+                                ${cur.responses.map((r, idx) => {
+                                    let cls = '';
+                                    if (picked === idx) cls = r.correct ? 'selected-correct' : 'selected-wrong';
+                                    return `<button type="button" onclick="chooseCareOption('${cur.id}', ${idx})" class="choice-card-btn ${cls}">
+                                        <div class="text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--bda-text-muted);">Option ${idx + 1}</div>
+                                        <div>${escapeHtml(r.text)}</div>
+                                        ${picked === idx ? `<div class="text-xs mt-2" style="color:${r.correct ? 'var(--zone-gospel)' : 'var(--zone-warn)'};"><strong>${r.correct ? '✓ ' + escapeHtml(r.type) + ':' : '⚠ ' + escapeHtml(r.type) + ':'}</strong> ${escapeHtml(r.feedback)}</div>` : ''}
+                                    </button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 bda-card p-5 space-y-4">
+                        <div class="text-xs font-bold uppercase tracking-wider" style="color:var(--zone-gospel);">Scripture Prescription &amp; Care Plan Builder</div>
+                        <div class="bda-card-muted p-3.5 text-sm">
+                            <div class="text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--bda-accent);">Heart &amp; Root Diagnostic</div>
+                            <div>${escapeHtml(cur.heartRoot)}</div>
+                        </div>
+                        <blockquote class="bda-callout-gospel font-scripture italic text-sm">${escapeHtml(cur.bsb)}</blockquote>
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider mb-1.5" style="color:var(--bda-text-muted);">Recommended Care Steps</div>
+                            <ol class="list-decimal ps-5 space-y-1 text-xs sm:text-sm">
+                                ${cur.steps.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
+                            </ol>
+                        </div>
+                        <div>
+                            <label for="care-note-box" class="block text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--bda-text-muted);">Pastoral Follow-Up &amp; Prayer Notes (Auto-Saved)</label>
+                            <textarea id="care-note-box" rows="3" class="bda-input" placeholder="Write personalized prayer requests, deacon follow-up items, or Scripture readings..." oninput="saveCareNote('${cur.id}', this.value)">${escapeHtml(noteVal)}</textarea>
+                        </div>
+                        <button type="button" onclick="exportCarePlanMd('${cur.id}')" class="bda-pill active w-full justify-center" style="padding: 0.6rem 1rem; font-size: 0.84rem;">
+                            ⬇ Export Pastoral Soul Care Plan (.md)
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function answerQuiz(qIdx, choiceIdx) {
+            if (typeof State.quizAnswers[qIdx] === 'number') return;
+            State.quizAnswers[qIdx] = choiceIdx;
+            const answeredCount = Object.keys(State.quizAnswers).length;
+            let correct = 0;
+            QUIZ_QUESTIONS.forEach((q, i) => {
+                if (State.quizAnswers[i] === q.answer) correct++;
+            });
+            const pct = Math.round((correct / QUIZ_QUESTIONS.length) * 100);
+            if (pct > State.quizBestPct) {
+                State.quizBestPct = pct;
+            }
+            if (answeredCount === QUIZ_QUESTIONS.length && pct >= 70) {
+                showToast(`🎓 Congratulations! ${pct}% Mastery synced to Study Passport!`);
+            }
+            renderQuiz();
+            saveStateAndSync();
+        }
+
+        function resetQuiz() {
+            State.quizAnswers = {};
+            renderQuiz();
+            showToast('↻ Exam reset — ready for a fresh attempt.');
+        }
+
+        function renderQuiz() {
+            const box = document.getElementById('quiz-container');
+            const scorePill = document.getElementById('quiz-score-live');
+            if (!box) return;
+            let correct = 0;
+            QUIZ_QUESTIONS.forEach((q, i) => {
+                if (State.quizAnswers[i] === q.answer) correct++;
+            });
+            const pct = Math.round((correct / QUIZ_QUESTIONS.length) * 100);
+            if (scorePill) scorePill.textContent = `Score: ${correct} / ${QUIZ_QUESTIONS.length} (${pct}%)`;
+
+            box.innerHTML = QUIZ_QUESTIONS.map((q, qIdx) => {
+                const picked = State.quizAnswers[qIdx];
+                const answered = typeof picked === 'number';
+                return `<div class="bda-card-muted p-4 sm:p-5">
+                    <div class="text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--bda-accent);">Question ${qIdx + 1} of ${QUIZ_QUESTIONS.length}</div>
+                    <div class="font-bold text-sm sm:text-base mb-3">${escapeHtml(q.q)}</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        ${q.choices.map((ch, cIdx) => {
+                            let cls = '';
+                            if (answered) {
+                                if (cIdx === q.answer) cls = 'selected-correct';
+                                else if (cIdx === picked) cls = 'selected-wrong';
+                            }
+                            return `<button type="button" ${answered ? 'disabled' : ''} onclick="answerQuiz(${qIdx}, ${cIdx})" class="choice-card-btn ${cls}">
+                                <span class="font-bold me-1">${String.fromCharCode(65 + cIdx)}.</span> ${escapeHtml(ch)}
+                            </button>`;
+                        }).join('')}
+                    </div>
+                    ${answered ? `<div class="bda-callout mt-3 text-xs sm:text-sm"><strong>Seminary Rationale:</strong> ${escapeHtml(q.rationale)}</div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        function setLanguage(lang) {
+            const supported = ['en', 'es', 'pt', 'fr', 'id', 'tl', 'he', 'ar', 'fa'];
+            if (!supported.includes(lang)) lang = 'en';
+            State.lang = lang;
+            const isRtl = ['he', 'ar', 'fa'].includes(lang);
+            document.documentElement.lang = lang;
+            document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+            try { localStorage.setItem('bda_lang', lang); } catch (e) {}
+
+            const s1 = document.getElementById('lang-select');
+            if (s1 && s1.value !== lang) s1.value = lang;
+            const s2 = document.getElementById('embed-lang-select');
+            if (s2 && s2.value !== lang) s2.value = lang;
+
+            const dict = I18N[lang] || I18N.en;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.textContent = dict[key];
+            });
+            if (typeof window.bdaSyncNavLinks === 'function') window.bdaSyncNavLinks();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedState();
+            const params = new URLSearchParams(window.location.search);
+            const urlTab = params.get('tab');
+            if (urlTab) switchTab(urlTab, false);
+            let initLang = params.get('lang');
+            if (!initLang) {
+                try { initLang = localStorage.getItem('bda_lang'); } catch (e) {}
+            }
+            setLanguage(initLang || 'en');
+            renderPolity();
+            renderAudit();
+            renderCorinthians();
+            renderCounseling();
+            renderQuiz();
+            saveStateAndSync();
+        });
+    </script>
+</body>
+</html>
